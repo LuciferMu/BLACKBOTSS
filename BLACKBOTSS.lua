@@ -5338,7 +5338,6 @@ database:del(bot_id.."BLACKBOTSS:Comd:New"..msg.chat_id_..""..msg.sender_user_id
 return false  
 end 
 end
-
 if text and text:match("^تغير رد المطور (.*)$") and Owner(msg) then
 local Teext = text:match("^تغير رد المطور (.*)$") 
 database:set(bot_id.."BLACKBOTSS:Sudo:Rd"..msg.chat_id_,Teext)
@@ -5374,8 +5373,16 @@ local Teext = text:match("^تغير رد العضو (.*)$")
 database:set(bot_id.."BLACKBOTSS:Memp:Rd"..msg.chat_id_,Teext)
 send(msg.chat_id_, msg.id_,"⌔︙ تم تغير رد العضو الى -› "..Teext)
 end
-
-
+if text == ("مسح الرتب") and BasicConstructor(msg) then
+send(msg.chat_id_, msg.id_,"⌔︙ تم مسح ردود الرتب بنجاح ")
+database:del(bot_id.."BLACKBOTSS:Sudo:Rd"..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:BasicConstructor:Rd"..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Constructor:Rd"..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Manager:Rd"..msg.chat_id_) 
+database:del(bot_id.."BLACKBOTSS:Mod:Rd"..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Special:Rd"..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Memp:Rd"..msg.chat_id_)
+end
 if text == ("مسح ردود المدير") and BasicConstructor(msg) then
 local list = database:smembers(bot_id.."BLACKBOTSS:List:Manager"..msg.chat_id_.."")
 for k,v in pairs(list) do
