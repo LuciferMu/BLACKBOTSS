@@ -4563,12 +4563,12 @@ send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-local status_Link = database:get(bot_id.."Link_Group"..msg.chat_id_)
+local status_Link = database:get(bot_id.."BLACKBOTSS:Link_Group"..msg.chat_id)
 if not status_Link then
 send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل") 
 return false  
 end
-local link = database:get(bot_id.."Private:Group:Link"..msg.chat_id_)            
+local link = database:get(bot_id.."BLACKBOTSS:Private:Group:Link"..msg.chat_id_)            
 if link then                              
 send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
 else                
