@@ -4522,6 +4522,26 @@ database:setex(bot_id.."BLACKBOTSS:Set:Priovate:Group:Link"..msg.chat_id_..""..m
 return false
 end
 end
+if text == "الرابط" then 
+local status_Link = database:get(bot_id.."BLACKBOTSS:Link_Group"..msg.chat_id_)
+if not status_Link then
+send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل") 
+return false  
+end
+local link = database:get(bot_id.."BLACKBOTSS:Private:Group:Link"..msg.chat_id_)            
+if link then                              
+send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
+else                
+local InviteLink = json:decode(https.request("https://api.telegram.org/bot"..token.."/getChat?chat_id="..msg.chat_id_))
+if InviteLink.result.invite_link then
+jk = InviteLink.result.invite_link
+elseif not InviteLink.result.invite_link then
+https.request("https://api.telegram.org/bot"..token.."/exportChatInviteLink?chat_id="..msg.chat_id_)
+jk = InviteLink.result.invite_link
+end 
+send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..jk.."]")                          
+end            
+end
 if text == "تفعيل جلب الرابط" or text == 'تفعيل الرابط' then
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -4552,35 +4572,6 @@ if Addictive(msg) then
 database:del(bot_id.."BLACKBOTSS:Link_Group"..msg.chat_id_) 
 send(msg.chat_id_, msg.id_,"⌔︙تم تعطيل جلب رابط المجموعه") 
 return false end
-end
-if text == "الرابط" then 
-if AddChannel(msg.sender_user_id_) == false then
-local textchuser = database:get(bot_id..'text:ch:user')
-if textchuser then
-send(msg.chat_id_, msg.id_,'['..textchuser..']')
-else
-send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ⌔︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
-end
-return false
-end
-local status_Link = database:get(bot_id.."BLACKBOTSS:Link_Group"..msg.chat_id)
-if not status_Link then
-send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل") 
-return false  
-end
-local link = database:get(bot_id.."BLACKBOTSS:Private:Group:Link"..msg.chat_id_)            
-if link then                              
-send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
-else                
-local InviteLink = json:decode(https.request("https://api.telegram.org/bot"..token.."/getChat?chat_id="..msg.chat_id_))
-if InviteLink.result.invite_link then
-jk = InviteLink.result.invite_link
-elseif not InviteLink.result.invite_link then
-https.request("https://api.telegram.org/bot"..token.."/exportChatInviteLink?chat_id="..msg.chat_id_)
-jk = InviteLink.result.invite_link
-end 
-send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..jk.."]")                          
-end            
 end
 if text == 'رقمي' then   
 tdcli_function({ID="GetUser",user_id_=msg.sender_user_id_},function(extra,result,success)
