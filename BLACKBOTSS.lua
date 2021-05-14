@@ -4618,7 +4618,7 @@ end
 if not database:get(bot_id.."y:msg:media"..msg.chat_id_) and (msg.content_.text_) or (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) then    
 local gmedia = database:scard(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)  
 if gmedia == 200 then
-local liste = database:smembers(bot_id.."msg:media"..msg.chat_id_)
+local liste = database:smembers(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
 for k,v in pairs(liste) do
 local Mesge = v
 if Mesge then
