@@ -5063,17 +5063,17 @@ send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":م",رفع مميز)
+database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":م","رفع مميز")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"م")
-database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":اد",رفع ادمن)
+database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":اد","رفع ادمن")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"اد")
-database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":مد",رفع مدير)
+database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":مد","رفع مدير")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"مد")
-database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":من",رفع منشئ)
+database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":من","رفع منشئ")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"من")
-database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":اس",رفع منشئ اساسي)
+database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":اس","رفع منشئ اساسي")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"اس")
-send(msg.chat_id_, msg.id_,"⌔︙الان ارسل لي الامر القديم ..")  
+send(msg.chat_id_, msg.id_,"⌔︙تم ترتيب الاوامر")  
 return false
 end
 if text == "اضف امر" and Constructor(msg) then
@@ -7407,7 +7407,7 @@ name = string.gsub(name,"🌥","⛅️⛅️⛅️⛅️⛅️⛅️🌥⛅️�
 name = string.gsub(name,"⛄️","☃☃☃☃☃☃⛄️☃☃☃☃")
 name = string.gsub(name,"👨‍🔬","👩‍🔬👩‍🔬👩‍🔬👩‍🔬👩‍🔬👩‍🔬👩‍🔬👩‍🔬👨‍🔬👩‍🔬👩‍??👩‍🔬")
 name = string.gsub(name,"👨‍💻","👩‍💻👩‍💻👩‍‍💻👩‍‍💻👩‍💻👨‍💻👩‍💻👩‍??👩‍💻")
-name = string.gsub(name,"👨‍⌔","👩‍⌔👩‍⌔👩‍⌔👩‍⌔👩‍⌔👩‍⌔👨‍⌔👩‍⌔")
+name = string.gsub(name,"👨‍⌔","👩‍⌔👩‍⌔👩‍⌔👩‍⌔👩‍⌔??‍⌔👨‍⌔👩‍⌔")
 name = string.gsub(name,"👩‍🍳","👨‍🍳👨‍🍳👨‍🍳👨‍🍳👨‍🍳👩‍🍳👨‍🍳👨‍🍳👨‍🍳")
 name = string.gsub(name,"🧚‍♀","🧚‍♂🧚‍♂🧚‍♂🧚‍♂🧚‍♀🧚‍♂🧚‍♂")
 name = string.gsub(name,"🧜‍♂","🧜‍♀🧜‍♀🧜‍♀🧜‍♀🧜‍♀🧚‍♂🧜‍♀🧜‍♀🧜‍♀")
