@@ -1429,6 +1429,17 @@ end
 --------------------------------------------------------------------------------------------------------------
 if Chat_Type == 'GroupBot' then
 if ChekAdd(msg.chat_id_) == true then
+if text == "تعطيل المسح التلقائي" and Owner(msg) then        
+database:set(bot_id.."y:msg:media"..msg.chat_id_,true)
+Reply_Status(msg,msg.sender_user_id_,"lock",'⌔︙تم تعطيل المسح التلقائي للميديا')
+return false
+end 
+if text == "تفعيل المسح التلقائي" and Owner(msg) then        
+database:del(bot_id.."y:msg:media"..msg.chat_id_)
+Reply_Status(msg,msg.sender_user_id_,"lock",'⌔︙تم تفعيل المسح التلقائي للميديا')
+return false
+end 
+
 if text == "قفل الدردشه" and msg.reply_to_message_id_ == 0 and Owner(msg) then 
 database:set(bot_id.."BLACKBOTSS:Lock:text"..msg.chat_id_,true) 
 Reply_Status(msg,msg.sender_user_id_,"lock","⌔️︙تم قفـل الدردشه")  
@@ -4552,17 +4563,37 @@ send(msg.chat_id_, msg.id_,'⌔︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-local status_Link = database:get(bot_id.."BLACKBOTSS:Link_Group"..msg.chat_id_)
+local status_Link = database:get(bot_id.."Link_Group"..msg.chat_id_)
 if not status_Link then
 send(msg.chat_id_, msg.id_,"⌔︙جلب الرابط معطل") 
 return false  
 end
-local link = database:get(bot_id.."BLACKBOTSS:Private:Group:Link"..msg.chat_id_)            
+local link = database:get(bot_id.."Private:Group:Link"..msg.chat_id_)            
 if link then                              
 send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..link.."]")                          
 else                
-send(msg.chat_id_, msg.id_,"⌔︙لا يوجد رابط ارسل ضع رابط")              
+local InviteLink = json:decode(https.request("https://api.telegram.org/bot"..token.."/getChat?chat_id="..msg.chat_id_))
+if InviteLink.result.invite_link then
+jk = InviteLink.result.invite_link
+elseif not InviteLink.result.invite_link then
+https.request("https://api.telegram.org/bot"..token.."/exportChatInviteLink?chat_id="..msg.chat_id_)
+jk = InviteLink.result.invite_link
+end 
+send(msg.chat_id_,msg.id_,"⌔︙LinK GrOup : \n ["..jk.."]")                          
 end            
+end
+if text == 'رقمي' then   
+tdcli_function({ID="GetUser",user_id_=msg.sender_user_id_},function(extra,result,success)
+if result.phone_number_  then
+one_nu = "⌔︙ رقمك {`"..(result.phone_number_).."`}"
+else
+one_nu = "⌔︙تم وضع رقمك لجهاتك اتصالك فقط"
+end      
+send(msg.chat_id_, msg.id_,one_nu) 
+end,nil)
+end 
+if text == 'ايديي' then   
+send(msg.chat_id_, msg.id_,'⌔︙ ايديك > '..msg.sender_user_id_)
 end
 if text == "مسح الرابط" or text == "حذف الرابط" then
 if AddChannel(msg.sender_user_id_) == false then
@@ -4584,6 +4615,21 @@ end
 if (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) and msg.reply_to_message_id_ == 0 then      
 database:sadd(bot_id.."BLACKBOTSS:allM"..msg.chat_id_, msg.id_)
 end
+if not database:get(bot_id.."y:msg:media"..msg.chat_id_) and (msg.content_.text_) or (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) then    
+local gmedia = database:scard(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)  
+if gmedia == 200 then
+local liste = database:smembers(bot_id.."msg:media"..msg.chat_id_)
+for k,v in pairs(liste) do
+local Mesge = v
+if Mesge then
+t = "⌔︙تم مسح "..k.." من الوسائط تلقائيا\n⌔︙يمكنك تعطيل الميزه بستخدام الامر ( `تعطيل المسح التلقائي` )"
+DeleteMessage(msg.chat_id_,{[0]=Mesge})
+end
+end
+send(msg.chat_id_, msg.id_, t)
+database:del(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
+end
+end
 if text == ("امسح") and cleaner(msg) then  
 local list = database:smembers(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
 for k,v in pairs(list) do
@@ -4600,17 +4646,8 @@ end
 send(msg.chat_id_, msg.id_, t)
 end
 if text == ("عدد الميديا") and cleaner(msg) then  
-local num = database:smembers(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
-for k,v in pairs(num) do
-local numl = v
-if numl then
-l = "⌔︙عدد الميديا الموجود هو "..k
-end
-end
-if #num == 0 then
-l = "⌔︙لا يوجد ميديا في المجموعه"
-end
-send(msg.chat_id_, msg.id_, l)
+local gmria = database:scard(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)  
+send(msg.chat_id_, msg.id_,"⌔︙عدد الميديا الموجود هو (* "..gmria.." *)")
 end
 if text and text:match("^ضع صوره") and Addictive(msg) and msg.reply_to_message_id_ == 0 or text and text:match("^وضع صوره") and Addictive(msg) and msg.reply_to_message_id_ == 0 then  
 if AddChannel(msg.sender_user_id_) == false then
@@ -6077,6 +6114,7 @@ local username = text:match("^رفع القيود @(.*)")
 function Function_BLACKBOTSS(extra, result, success)
 if result.id_ then
 if DevBLACKBOTSS(msg) then
+https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 database:srem(bot_id.."BLACKBOTSS:GBan:User",result.id_)
 database:srem(bot_id.."BLACKBOTSS:Ban:User"..msg.chat_id_,result.id_)
 database:srem(bot_id.."BLACKBOTSS:Muted:User"..msg.chat_id_,result.id_)
@@ -6085,6 +6123,7 @@ status  = "\n⌔︙ تم الغاء القيود عنه"
 texts = usertext..status
 send(msg.chat_id_, msg.id_,texts)
 else
+https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 database:srem(bot_id.."BLACKBOTSS:Ban:User"..msg.chat_id_,result.id_)
 database:srem(bot_id.."BLACKBOTSS:Muted:User"..msg.chat_id_,result.id_)
 Reply_Status(msg,result.id_,"reply","\n⌔︙ تم الغاء القيود عنه")  
@@ -6108,11 +6147,13 @@ return false
 end
 function Function_BLACKBOTSS(extra, result, success)
 if DevBLACKBOTSS(msg) then
+https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 database:srem(bot_id.."BLACKBOTSS:GBan:User",result.sender_user_id_)
 database:srem(bot_id.."BLACKBOTSS:Ban:User"..msg.chat_id_,result.sender_user_id_)
 database:srem(bot_id.."BLACKBOTSS:Muted:User"..msg.chat_id_,result.sender_user_id_)
 Reply_Status(msg,result.sender_user_id_,"reply","\n⌔︙ تم الغاء القيود عنه")  
 else
+https.request("https://api.telegram.org/bot" .. token .. "/restrictChatMember?chat_id=" .. msg.chat_id_ .. "&user_id=" .. result.id_ .. "&can_send_messages=True&can_send_media_messages=True&can_send_other_messages=True&can_add_web_page_previews=True")
 database:srem(bot_id.."BLACKBOTSS:Ban:User"..msg.chat_id_,result.sender_user_id_)
 database:srem(bot_id.."BLACKBOTSS:Muted:User"..msg.chat_id_,result.sender_user_id_)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
@@ -8292,7 +8333,7 @@ Text = [[
 ⌔︙اوامر حمايه المجموعه
  — — — — — — — — — 
 ⌔︙قفل/فتح + الاوامر الادناه 
-⌔︙قفل/فتح + الامر بالتقيد • بالطرد • بالكتم
+⌔︙قفل/فتح + الامر بالتقيد ⌔︙بالطرد ⌔︙بالكتم
  — — — — — — — — — 
 ⌔︙الروابط
 ⌔︙المعرف
