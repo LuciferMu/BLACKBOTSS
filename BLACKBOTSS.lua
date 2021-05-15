@@ -1185,9 +1185,14 @@ t = GetWelcomeGroup
 else  
 t = "\n⌔︙ يهلا بالكمرر  \n⌔︙  name \n⌔︙ user" 
 end 
-t = t:gsub("name",result.first_name_) 
-t = t:gsub("user",("@"..result.username_ or "لا يوجد")) 
-send(msg.chat_id_, msg.id_,t)
+if result.username_ then
+t = t:gsub('name',result.first_name_) 
+t = t:gsub('user','@'..result.username_) 
+else
+t = t:gsub('name',result.first_name_) 
+t = t:gsub('user','لا يوجد') 
+end
+send(msg.chat_id_, msg.id_,'['..t..']')
 end,nil) 
 end 
 end 
