@@ -95,9 +95,17 @@ else
 return false  
 end  
 end
+function creatorA(msg)
+local hash = database:sismember(bot_id.."creator"..msg.chat_id_, msg.sender_user_id_) 
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or VIP_DeV(msg) then    
+return true 
+else 
+return false 
+end 
+end
 function BasicConstructor(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_, msg.sender_user_id_) 
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or VIP_DeV(msg) then     
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or VIP_DeV(msg) or creatorA(msg) then     
 return true 
 else 
 return false 
@@ -105,7 +113,7 @@ end
 end
 function Constructor(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:Constructor"..msg.chat_id_, msg.sender_user_id_) 
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or VIP_DeV(msg) then        
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or VIP_DeV(msg) or creatorA(msg) then             
 return true    
 else    
 return false    
@@ -113,7 +121,7 @@ end
 end
 function Owner(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:Manager"..msg.chat_id_,msg.sender_user_id_)    
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or VIP_DeV(msg) then        
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or VIP_DeV(msg) or creatorA(msg) then             
 return true    
 else    
 return false    
@@ -121,7 +129,7 @@ end
 end
 function Addictive(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:Mod:User"..msg.chat_id_,msg.sender_user_id_)    
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or Owner(msg) or VIP_DeV(msg) then        
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or Owner(msg) or VIP_DeV(msg) or creatorA(msg) then             
 return true    
 else    
 return false    
@@ -129,7 +137,7 @@ end
 end
 function cleaner(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:MN:TF"..msg.chat_id_,msg.sender_user_id_)    
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or VIP_DeV(msg) then        
+if hash or Bot(msg) or DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or VIP_DeV(msg) or creatorA(msg) then             
 return true    
 else    
 return false    
@@ -137,7 +145,7 @@ end
 end
 function Vips(msg)
 local hash = database:sismember(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_,msg.sender_user_id_) 
-if hash or Bot(msg) or  DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or Owner(msg) or Addictive(msg) or VIP_DeV(msg) then        
+if hash or Bot(msg) or  DevBLACKBOTSS(msg) or DevBot(msg) or BasicConstructor(msg) or Constructor(msg) or Owner(msg) or Addictive(msg) or VIP_DeV(msg) or creatorA(msg) then             
 return true 
 else 
 return false 
@@ -171,8 +179,8 @@ elseif database:sismember(bot_id.."DEV:Sudo:T", user_id) then
 var = true  
 elseif database:sismember(bot_id.."BLACKBOTSS:Sudo:User", user_id) then
 var = true  
-elseif database:sismember(bot_id.."BLACKBOTSS:Basic:Constructor"..chat_id, user_id) then
-var = true                 
+elseif database:sismember(bot_id.."creator"..chat_id, user_id) then
+var = true                
 elseif database:sismember(bot_id.."BLACKBOTSS:Basic:Constructor"..chat_id, user_id) then
 var = true
 elseif database:sismember(bot_id.."BLACKBOTSS:Constructor"..chat_id, user_id) then
@@ -200,6 +208,7 @@ var = "البوت"
 elseif database:sismember(bot_id.."DEV:Sudo:T", user_id) then  var = "المطور الاساسي²"  
 elseif database:sismember(bot_id.."BLACKBOTSS:Sudo:User", user_id) then
 var = database:get(bot_id.."BLACKBOTSS:Sudo:Rd"..chat_id) or "المطور"  
+elseif database:sismember(bot_id.."creator"..chat_id,user_id) then var = "المالك"
 elseif database:sismember(bot_id.."BLACKBOTSS:Basic:Constructor"..chat_id, user_id) then
 var = database:get(bot_id.."BLACKBOTSS:BasicConstructor:Rd"..chat_id) or "المنشئ اساسي"
 elseif database:sismember(bot_id.."BLACKBOTSS:Constructor"..chat_id, user_id) then
@@ -1430,12 +1439,12 @@ end
 if Chat_Type == 'GroupBot' then
 if ChekAdd(msg.chat_id_) == true then
 if text == "تعطيل المسح التلقائي" and Owner(msg) then        
-database:set(bot_id.."y:msg:media"..msg.chat_id_,true)
+database:del(bot_id.."y:msg:media"..msg.chat_id_)
 Reply_Status(msg,msg.sender_user_id_,"lock",'⌔︙تم تعطيل المسح التلقائي للميديا')
 return false
 end 
 if text == "تفعيل المسح التلقائي" and Owner(msg) then        
-database:del(bot_id.."y:msg:media"..msg.chat_id_)
+database:set(bot_id.."y:msg:media"..msg.chat_id_,true)
 Reply_Status(msg,msg.sender_user_id_,"lock",'⌔︙تم تفعيل المسح التلقائي للميديا')
 return false
 end 
@@ -2893,8 +2902,94 @@ database:srem(bot_id.."BLACKBOTSS:Sudo:User", userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من المطورين")  
 return false 
 end
-
-if text == ("رفع منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then  
+if text == "المالكين" and DevBot(msg) then
+local list = database:smembers(bot_id.."creator"..msg.chat_id_)
+t = "\n⌔︙قائمة مالكين المجموعه \n — — — — — — — — — \n"
+for k,v in pairs(list) do
+local username = database:get(bot_id.."User:Name" .. v)
+if username then
+t = t..""..k.."↬⌔︙ [@"..username.."]\n"
+else
+t = t..""..k.."- (`"..v.."`)\n"
+end
+end
+if #list == 0 then
+t = "*⌔︙لا يوجد مالكين*"
+end
+send(msg.chat_id_, msg.id_, t)
+return false
+end
+if text == "مسح قائمه المالكين" and DevBot(msg) then
+database:del(bot_id.."creator"..msg.chat_id_)
+tdcli_function ({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""),filter_ = {ID = "ChannelMembersAdministrators"},offset_ = 0,limit_ = 100},function(arg,data) 
+local admins = data.members_
+for i=0 , #admins do
+if data.members_[i].status_.ID == "ChatMemberStatusCreator" then
+database:sadd(bot_id.."creator"..msg.chat_id_,admins[i].user_id_)
+end 
+end  
+end,nil)
+send(msg.chat_id_, msg.id_, "*⌔︙تم مسح المالكين*")
+end
+if text == ("رفع مالك") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then  
+function Function_BLACKBOTSS(extra, result, success)
+database:sadd(bot_id.."creator"..msg.chat_id_, result.sender_user_id_)
+Reply_Status(msg,result.sender_user_id_,"reply","⌔︙تم ترقيته مالك")  
+end
+tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_BLACKBOTSS, nil)
+return false
+end
+if text and text:match("^رفع مالك @(.*)$") and DevBot(msg) then  
+local username = text:match("^رفع مالك @(.*)$")
+function Function_BLACKBOTSS(extra, result, success)
+if result.id_ then
+if (result and result.type_ and result.type_.ID == "ChannelChatInfo") then
+send(msg.chat_id_,msg.id_,"⌔︙عذرا عزيزي المستخدم هاذا معرف قناة يرجى استخدام الامر بصوره صحيحه !")   
+return false 
+end      
+database:sadd(bot_id.."creator"..msg.chat_id_, result.id_)
+Reply_Status(msg,result.id_,"reply","⌔︙تم ترقيته مالك")  
+else
+send(msg.chat_id_, msg.id_,"*⌔︙لا يوجد حساب بهاذا المعرف*")
+end
+end
+tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_BLACKBOTSS, nil)
+return false
+end
+if text and text:match("^رفع مالك (%d+)$") and DevBot(msg) then  
+local userid = text:match("^رفع مالك (%d+)$") 
+database:sadd(bot_id.."creator"..msg.chat_id_, userid)
+Reply_Status(msg,userid,"reply","⌔︙تم ترقيته مالك")  
+return false
+end
+if text == ("تنزيل مالك") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then  
+function Function_BLACKBOTSS(extra, result, success)
+database:srem(bot_id.."creator"..msg.chat_id_, result.sender_user_id_)
+Reply_Status(msg,result.sender_user_id_,"reply","*⌔︙تم تنزيله من المالكين*")  
+end
+tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_BLACKBOTSS, nil)
+return false
+end
+if text and text:match("^تنزيل مالك @(.*)$") and DevBot(msg) then  
+local username = text:match("^تنزيل مالك @(.*)$")
+function Function_BLACKBOTSS(extra, result, success)
+if result.id_ then
+database:srem(bot_id.."creator"..msg.chat_id_, result.id_)
+Reply_Status(msg,result.id_,"reply","⌔︙تم تنزيله من المالكين")  
+else
+send(msg.chat_id_, msg.id_,"*⌔︙لا يوجد حساب بهاذا المعرف*")
+end
+end
+tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_BLACKBOTSS, nil)
+return false
+end
+if text and text:match("^تنزيل مالك (%d+)$") and DevBot(msg) then  
+local userid = text:match("^تنزيل مالك (%d+)$") 
+database:srem(bot_id.."creator"..msg.chat_id_, userid)
+Reply_Status(msg,userid,"reply","*⌔︙تم تنزيله من المالكين*")  
+return false
+end
+if text == ("رفع منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -2911,7 +3006,7 @@ end
 tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_BLACKBOTSS, nil)
 return false
 end
-if text and text:match("^رفع منشئ اساسي @(.*)$") and DevBot(msg) then  
+if text and text:match("^رفع منشئ اساسي @(.*)$") and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -2937,7 +3032,7 @@ end
 tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_BLACKBOTSS, nil)
 return false
 end
-if text and text:match("^رفع منشئ اساسي (%d+)$") and DevBot(msg) then  
+if text and text:match("^رفع منشئ اساسي (%d+)$") and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -2952,7 +3047,7 @@ database:sadd(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم ترقيته منشئ اساسي")  
 return false
 end
-if text == ("تنزيل منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBot(msg) then  
+if text == ("تنزيل منشئ اساسي") and tonumber(msg.reply_to_message_id_) ~= 0 and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -2969,7 +3064,7 @@ end
 tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_BLACKBOTSS, nil)
 return false
 end
-if text and text:match("^تنزيل منشئ اساسي @(.*)$") and DevBot(msg) then  
+if text and text:match("^تنزيل منشئ اساسي @(.*)$") and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -2992,7 +3087,7 @@ end
 tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_BLACKBOTSS, nil)
 return false
 end
-if text and text:match("^تنزيل منشئ اساسي (%d+)$") and DevBot(msg) then  
+if text and text:match("^تنزيل منشئ اساسي (%d+)$") and creatorA(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
 if textchuser then
@@ -3007,7 +3102,6 @@ database:srem(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_, userid)
 Reply_Status(msg,userid,"reply","⌔︙تم تنزيله من المنشئين")  
 return false
 end
-
 if text == "رفع منشئ" and tonumber(msg.reply_to_message_id_) ~= 0 and BasicConstructor(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -4615,7 +4709,8 @@ end
 if (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) and msg.reply_to_message_id_ == 0 then      
 database:sadd(bot_id.."BLACKBOTSS:allM"..msg.chat_id_, msg.id_)
 end
-if not database:get(bot_id.."y:msg:media"..msg.chat_id_) and (msg.content_.text_) or (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) then    
+if (msg.content_.text_) or (msg.content_.animation_) or (msg.content_.photo_) or (msg.content_.video_) or (msg.content_.document) or (msg.content_.sticker_) or (msg.content_.voice_) or (msg.content_.audio_) then
+if database:get(bot_id.."y:msg:media"..msg.chat_id_) then    
 local gmedia = database:scard(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)  
 if gmedia == 200 then
 local liste = database:smembers(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
@@ -4628,6 +4723,7 @@ end
 end
 send(msg.chat_id_, msg.id_, t)
 database:del(bot_id.."BLACKBOTSS:allM"..msg.chat_id_)
+end
 end
 end
 if text == ("امسح") and cleaner(msg) then  
@@ -6325,7 +6421,7 @@ return false
 end
 local UserName = (b.username_ or "Fbbbbb")
 send(msg.chat_id_, msg.id_,"⌔︙تم ترقية منشئ المجموعه ~ ["..b.first_name_.."](T.me/"..UserName..")")  
-database:sadd(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_,b.id_)
+database:sadd(bot_id.."creator"..msg.chat_id_,b.id_)
 end,nil)   
 end,nil)   
 end
@@ -8591,6 +8687,14 @@ if database:sismember(bot_id..'BLACKBOTSS:Chek:Groups',msg.chat_id_) then
 send(msg.chat_id_, msg.id_,'⌔︙المجموعه مفعله سابقا ')
 else
 Reply_Status(msg,result.id_,'reply_Add','⌔︙تم تفعيل المجموعه ~ '..chat.title_..'')
+tdcli_function ({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""),filter_ = {ID = "ChannelMembersAdministrators"},offset_ = 0,limit_ = 100},function(arg,data) 
+local admins = data.members_
+for i=0 , #admins do
+if data.members_[i].status_.ID == "ChatMemberStatusCreator" then
+database:sadd(bot_id.."creator"..msg.chat_id_,admins[i].user_id_)
+end 
+end  
+end,nil)
 database:sadd(bot_id..'BLACKBOTSS:Chek:Groups',msg.chat_id_)
 local Name = '['..result.first_name_..'](tg://user?id='..result.id_..')'
 local NameChat = chat.title_
@@ -8702,6 +8806,14 @@ send(msg.chat_id_, msg.id_,'⌔︙عدد اعضاء المجموعه اقل من
 return false
 end
 Reply_Status(msg,result.id_,'reply_Add','⌔︙تم تفعيل المجموعه ~ '..chat.title_..'')
+tdcli_function ({ID = "GetChannelMembers",channel_id_ = msg.chat_id_:gsub("-100",""),filter_ = {ID = "ChannelMembersAdministrators"},offset_ = 0,limit_ = 100},function(arg,data) 
+local admins = data.members_
+for i=0 , #admins do
+if data.members_[i].status_.ID == "ChatMemberStatusCreator" then
+database:sadd(bot_id.."creator"..msg.chat_id_,admins[i].user_id_)
+end 
+end  
+end,nil)
 database:sadd(bot_id..'BLACKBOTSS:Chek:Groups',msg.chat_id_)  
 database:sadd(bot_id..'BLACKBOTSS:Basic:Constructor'..msg.chat_id_, msg.sender_user_id_)
 local Name = '['..result.first_name_..'](tg://user?id='..result.id_..')'
