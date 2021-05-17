@@ -97,7 +97,7 @@ end
 end
 function creatorA(msg)
 local hash = database:sismember(bot_id.."creator"..msg.chat_id_, msg.sender_user_id_) 
-if hash or Bot(msg) or DevBLACKBOTSS(msg) or VIP_DeV(msg) then    
+if hash or DevBot(msg) or DevBLACKBOTSS(msg) or VIP_DeV(msg) then    
 return true 
 else 
 return false 
@@ -9273,6 +9273,7 @@ if text == 'حذف كليشه ستارت ⌔' then
 database:del(bot_id..'Start:Bot') 
 send(msg.chat_id_, msg.id_,'⌔︙تم حذف كليشه ستارت') 
 end
+if VIP_DeV(msg) then
 if text and text:match("^- تغير الاشتراك ⌔ .$") and DevBLACKBOTSS(msg) then  
 database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
@@ -9317,6 +9318,11 @@ else
 send(msg.chat_id_, msg.id_, "⌔︙لا يوجد قناة في الاشتراك الاجباري ")
 end
 return false  
+end
+end
+if not VIP_DeV(msg) then
+if text == "حذف رساله الاشتراك ⌔ ." or text == "- تفعيل الاشتراك الاجباري ⌔ ." or text == "- تعطيل الاشتراك الاجباري ⌔ ." or text == "- الاشتراك الاجباري ⌔ ." or text and text:match("^- تعين قناة الاشتراك ⌔ .$") or  text and text:match("^- تغير الاشتراك ⌔ .$") or text and text:match("^- تغير رساله الاشتراك ⌔ .$") then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 end
 if database:get(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
 if text and text:match("^الغاء$") then 
