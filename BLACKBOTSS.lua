@@ -9273,7 +9273,7 @@ if text == 'حذف كليشه ستارت ⌔' then
 database:del(bot_id..'Start:Bot') 
 send(msg.chat_id_, msg.id_,'⌔︙تم حذف كليشه ستارت') 
 end
-if text and text:match("^- تغير الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if text and text:match("^- تغير الاشتراك ⌔ .$")  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9282,7 +9282,7 @@ database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_,
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
 return false  
 end
-if text and text:match("^- تغير رساله الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if text and text:match("^- تغير رساله الاشتراك ⌔ .$")  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9291,7 +9291,7 @@ database:setex(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي النص الذي تريده')
 return false  
 end
-if text == "حذف رساله الاشتراك ⌔ ." and VIP_DeV(msg) then  
+if text == "حذف رساله الاشتراك ⌔ ."  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9300,7 +9300,7 @@ database:del(bot_id..'text:ch:user')
 send(msg.chat_id_, msg.id_, "⌔︙تم مسح رساله الاشتراك ")
 return false  
 end
-if text and text:match("^- تعين قناة الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if text and text:match("^- تعين قناة الاشتراك ⌔ .$")  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9309,7 +9309,7 @@ database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_,
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
 return false  
 end
-if text == "- تفعيل الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if text == "- تفعيل الاشتراك الاجباري ⌔ ."  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9323,7 +9323,7 @@ send(msg.chat_id_, msg.id_,"⌔︙اهلا عزيزي المطور \n⌔︙ار�
 end
 return false  
 end
-if text == "- تعطيل الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if text == "- تعطيل الاشتراك الاجباري ⌔ ."  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
@@ -9333,7 +9333,7 @@ database:del(bot_id..'add:ch:username')
 send(msg.chat_id_, msg.id_, "⌔︙تم تعطيل الاشتراك الاجباري ")
 return false  
 end
-if text == "- الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if text == "- الاشتراك الاجباري ⌔ ."  then  
 if not VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 return false  
