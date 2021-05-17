@@ -9273,28 +9273,47 @@ if text == 'حذف كليشه ستارت ⌔' then
 database:del(bot_id..'Start:Bot') 
 send(msg.chat_id_, msg.id_,'⌔︙تم حذف كليشه ستارت') 
 end
-if VIP_DeV(msg) then
-if text and text:match("^- تغير الاشتراك ⌔ .$") and DevBLACKBOTSS(msg) then  
+if text and text:match("^- تغير الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
 return false  
 end
-if text and text:match("^- تغير رساله الاشتراك ⌔ .$") and DevBLACKBOTSS(msg) then  
+if text and text:match("^- تغير رساله الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 database:setex(bot_id.."textch:user" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي النص الذي تريده')
 return false  
 end
-if text == "حذف رساله الاشتراك ⌔ ." and DevBLACKBOTSS(msg) then  
+if text == "حذف رساله الاشتراك ⌔ ." and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 database:del(bot_id..'text:ch:user')
 send(msg.chat_id_, msg.id_, "⌔︙تم مسح رساله الاشتراك ")
 return false  
 end
-if text and text:match("^- تعين قناة الاشتراك ⌔ .$") and DevBLACKBOTSS(msg) then  
+if text and text:match("^- تعين قناة الاشتراك ⌔ .$") and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_, 360, true)  
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
 return false  
 end
-if text == "- تفعيل الاشتراك الاجباري ⌔ ." and DevBLACKBOTSS(msg) then  
+if text == "- تفعيل الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 if database:get(bot_id..'add:ch:id') then
 local addchusername = database:get(bot_id..'add:ch:username')
 send(msg.chat_id_, msg.id_,"⌔︙الاشتراك الاجباري مفعل \n⌔︙على القناة -› ["..addchusername.."]")
@@ -9304,13 +9323,21 @@ send(msg.chat_id_, msg.id_,"⌔︙اهلا عزيزي المطور \n⌔︙ار�
 end
 return false  
 end
-if text == "- تعطيل الاشتراك الاجباري ⌔ ." and DevBLACKBOTSS(msg) then  
+if text == "- تعطيل الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 database:del(bot_id..'add:ch:id')
 database:del(bot_id..'add:ch:username')
 send(msg.chat_id_, msg.id_, "⌔︙تم تعطيل الاشتراك الاجباري ")
 return false  
 end
-if text == "- الاشتراك الاجباري ⌔ ." and DevBLACKBOTSS(msg) then  
+if text == "- الاشتراك الاجباري ⌔ ." and VIP_DeV(msg) then  
+if not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+return false  
+end
 if database:get(bot_id..'add:ch:username') then
 local addchusername = database:get(bot_id..'add:ch:username')
 send(msg.chat_id_, msg.id_, "⌔︙تم تفعيل الاشتراك الاجباري \n⌔︙على القناة -› ["..addchusername.."]")
@@ -9318,11 +9345,6 @@ else
 send(msg.chat_id_, msg.id_, "⌔︙لا يوجد قناة في الاشتراك الاجباري ")
 end
 return false  
-end
-end
-if not VIP_DeV(msg) then
-if text == "حذف رساله الاشتراك ⌔ ." or text == "- تفعيل الاشتراك الاجباري ⌔ ." or text == "- تعطيل الاشتراك الاجباري ⌔ ." or text == "- الاشتراك الاجباري ⌔ ." or text and text:match("^- تعين قناة الاشتراك ⌔ .$") or  text and text:match("^- تغير الاشتراك ⌔ .$") or text and text:match("^- تغير رساله الاشتراك ⌔ .$") then
-send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
 end
 if database:get(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
 if text and text:match("^الغاء$") then 
