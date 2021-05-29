@@ -62,7 +62,6 @@ end
 end  
 return Taha_Sudo  
 end 
-
 function VIP_DeV(msg)  
 local h_Sudo = false  
 for k,v in pairs(List_Sudos) do  
@@ -411,8 +410,8 @@ waveform_ = "",
 caption_ = caption or ""
 }},func or dl_cb,nil)
 end
-
 function sendAnimation(chat_id,reply_id,animation,caption,func)
+local TextParseMode = {ID = "TextParseModeMarkdown"}
 tdcli_function({
 ID="SendMessage",
 chat_id_ = chat_id,
@@ -425,7 +424,8 @@ ID="InputMessageAnimation",
 animation_ = GetInputFile(animation),
 width_ = 0,
 height_ = 0,
-caption_ = caption or ""
+caption_ = caption or "",
+parse_mode_ = TextParseMode
 }},func or dl_cb,nil)
 end
 
@@ -480,8 +480,6 @@ height_ = 0,
 caption_ = caption or ""
 }},func or dl_cb,nil)
 end
-
-
 function sendDocument(chat_id,reply_id,document,caption,func)
 tdcli_function({
 ID="SendMessage",
@@ -629,14 +627,14 @@ end
 function add_file(msg,chat,ID_FILE,File_Name)
 if File_Name:match('.json') then
 if tonumber(File_Name:match('(%d+)')) ~= tonumber(bot_id) then 
-sendtext(chat,msg.id_,"⌔︙ملف النسخه الاحتياطيه ليس لهاذا البوت")   
+sendText(chat,msg.id_,"⌔︙ملف النسخه الاحتياطيه ليس لهاذا البوت")   
 return false 
 end      
 local File = json:decode(https.request('https://api.telegram.org/bot' .. token .. '/getfile?file_id='..ID_FILE) ) 
 download_to_file('https://api.telegram.org/file/bot'..token..'/'..File.result.file_path, ''..File_Name) 
 send(chat,msg.id_,"⌔︙جاري ...\n⌔︙رفع الملف الان")   
 else
-sendtext(chat,msg.id_,"*⌔︙عذرا الملف ليس بصيغة {JSON} يرجى رفع الملف الصحيح*")   
+sendText(chat,msg.id_,"*⌔︙عذرا الملف ليس بصيغة {JSON} يرجى رفع الملف الصحيح*")   
 end      
 local info_file = io.open('./'..bot_id..'.json', "r"):read('*a')
 local groups = JSON.decode(info_file)
@@ -5208,7 +5206,7 @@ database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":تعط","�
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"تعط")
 database:set(bot_id.."BLACKBOTSS:Set:Cmd:Group:New1"..msg.chat_id_..":تفع","تفعيل الايدي بالصوره")
 database:sadd(bot_id.."BLACKBOTSS:List:Cmd:Group:New"..msg.chat_id_,"تفع")
-send(msg.chat_id_, msg.id_,"⌔︙تم ترتيب الاوامر بالشكل التالي ~\n- ايدي - ا .\n- مميز - م .\n- ادمن - اد .\n- مدير - مد . \n- منشى - من . \n- المنشئ الاساسي - اس  . \n- تعطيل الايدي بالصوره - تعط .\n- تفعيل الايدي \n بالصوره - تفع .")  
+send(msg.chat_id_, msg.id_,"⌔︙تم ترتيب الاوامر بالشكل التالي ~\n- ايدي - ا .\n- مميز - م .\n- ادمن - اد .\n- مدير - مد . \n- منشى - من . \n- المنشئ الاساسي - اس  . \n- تعطيل الايدي بالصوره - تعط .\n- تفعيل الايدي بالصوره - تفع .")  
 end
 if text == "اضف امر" and Constructor(msg) then
 if AddChannel(msg.sender_user_id_) == false then
@@ -5543,6 +5541,12 @@ end
 if text == ("مسح ردود المدير") and BasicConstructor(msg) then
 local list = database:smembers(bot_id.."BLACKBOTSS:List:Manager"..msg.chat_id_.."")
 for k,v in pairs(list) do
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:AudioCa"..v..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:FileCa"..v..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:VideoCa"..v..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:PhotoCa"..v..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:VicoCa"..v..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:GifCa"..v..msg.chat_id_)
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Gif"..v..msg.chat_id_)   
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Vico"..v..msg.chat_id_)   
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Stekrs"..v..msg.chat_id_)     
@@ -5592,9 +5596,19 @@ database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Stekrs"..test..msg.chat_id_, msg
 end   
 if msg.content_.voice_ then  
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Vico"..test..msg.chat_id_, msg.content_.voice_.voice_.persistent_id_)  
-end   
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:VicoCa"..test..msg.chat_id_, rtr)  
+end
+end     
 if msg.content_.animation_ then   
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Gif"..test..msg.chat_id_, msg.content_.animation_.animation_.persistent_id_)  
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:GifCa"..test..msg.chat_id_, rtr)  
+end
 end  
 if text then   
 text = text:gsub('"',"") 
@@ -5605,13 +5619,28 @@ database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Text"..test..msg.chat_id_, text)
 end  
 if msg.content_.audio_ then
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Audio"..test..msg.chat_id_, msg.content_.audio_.audio_.persistent_id_)  
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:AudioCa"..test..msg.chat_id_, rtr)  
 end
+end  
 if msg.content_.document_ then
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:File"..test..msg.chat_id_, msg.content_.document_.document_.persistent_id_)  
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:FileCa"..test..msg.chat_id_, rtr)  
 end
+end  
 if msg.content_.video_ then
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Video"..test..msg.chat_id_, msg.content_.video_.video_.persistent_id_)  
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:VideoCa"..test..msg.chat_id_, rtr)  
 end
+end  
 if msg.content_.photo_ then
 if msg.content_.photo_.sizes_[0] then
 photo_in_group = msg.content_.photo_.sizes_[0].photo_.persistent_id_
@@ -5626,7 +5655,12 @@ if msg.content_.photo_.sizes_[3] then
 photo_in_group = msg.content_.photo_.sizes_[3].photo_.persistent_id_
 end
 database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:Photo"..test..msg.chat_id_, photo_in_group)  
+if msg.content_.caption_ then
+rtr = msg.content_.caption_
+rtr = rtr:gsub('"',""):gsub('"',""):gsub("`",""):gsub("*","") 
+database:set(bot_id.."BLACKBOTSS:Add:Rd:Manager:PhotoCa"..test..msg.chat_id_, rtr)  
 end
+end  
 send(msg.chat_id_, msg.id_,"⌔︙تم حفظ الرد بنجاح")
 return false  
 end  
@@ -5678,6 +5712,11 @@ end
 if text and text:match("^(.*)$") then
 if database:get(bot_id.."BLACKBOTSS:Set:Manager:rd"..msg.sender_user_id_..":"..msg.chat_id_.."") == "true2" then
 send(msg.chat_id_, msg.id_,"⌔︙تم ازالة الرد من قائمه الردود")
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:AudioCa"..text..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:VicoCa"..text..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:PhotoCa"..text..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:FileCa"..text..msg.chat_id_)
+database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:GifCa"..text..msg.chat_id_)
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Gif"..text..msg.chat_id_)   
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Vico"..text..msg.chat_id_)   
 database:del(bot_id.."BLACKBOTSS:Add:Rd:Manager:Stekrs"..text..msg.chat_id_)     
@@ -5697,54 +5736,85 @@ local anemi = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Gif"..text..msg.ch
 local veico = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Vico"..text..msg.chat_id_)   
 local stekr = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Stekrs"..text..msg.chat_id_)     
 local Text = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Text"..text..msg.chat_id_)   
-local photo = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Photo"..text..msg.chat_id_)
-local video = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Video"..text..msg.chat_id_)
+local photo = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Photo"..text..msg.chat_id_)  
+local video = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Video"..text..msg.chat_id_) 
 local document = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:File"..text..msg.chat_id_)
 local audio = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:Audio"..text..msg.chat_id_)
-if Text then 
 tdcli_function({ID="GetUser",user_id_=msg.sender_user_id_},function(arg,data)
+if Text then 
 local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
 local TotalMsg = Total_message(NumMsg)
 local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
 local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
-local Text = Text:gsub('#username',(data.username_ or 'لا يوجد')) 
-local Text = Text:gsub('#name',data.first_name_)
-local Text = Text:gsub('#id',msg.sender_user_id_)
-local Text = Text:gsub('#edit',message_edit)
-local Text = Text:gsub('#msgs',NumMsg)
-local Text = Text:gsub('#stast',Status_Gps)
+local Text = Text:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
 send(msg.chat_id_, msg.id_,'['..Text..']')
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
-end,nil)
 end
 if stekr then 
 sendSticker(msg.chat_id_,msg.id_,stekr)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
 if veico then 
-sendVoice(msg.chat_id_, msg.id_,veico,"")
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local veicoCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:VicoCa"..text..msg.chat_id_)  or ""
+local veicoCa = veicoCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendVoice(msg.chat_id_, msg.id_,veico,veicoCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
 if video then 
-sendVideo(msg.chat_id_, msg.id_,video,"")
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local videoCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:VideoCa"..text..msg.chat_id_) or ""
+local videoCa = videoCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendVideo(msg.chat_id_, msg.id_,video,videoCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
 if anemi then 
-sendAnimation(msg.chat_id_, msg.id_,anemi,"")   
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local anemiCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:GifCa"..text..msg.chat_id_) or ""
+local anemiCa = anemiCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendAnimation(msg.chat_id_, msg.id_,anemi,anemiCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
-if document then
-sendDocument(msg.chat_id_, msg.id_, document)   
+if document then 
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local documentCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:FileCa"..text..msg.chat_id_) or ""
+local documentCa = documentCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendDocument(msg.chat_id_, msg.id_, document,documentCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end  
-if audio then
-sendAudio(msg.chat_id_,msg.id_,audio)  
+if audio then 
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local audioCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:AudioCa"..text..msg.chat_id_)  or ""
+local audioCa = audioCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendAudio(msg.chat_id_,msg.id_,audio,audioCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
-if photo then
-sendPhoto(msg.chat_id_,msg.id_,photo,photo_caption)
+if photo then 
+local NumMsg = database:get(bot_id..'BLACKBOTSS:messageUser'..msg.chat_id_..':'..msg.sender_user_id_) or 0
+local TotalMsg = Total_message(NumMsg)
+local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
+local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
+local photoCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:PhotoCa"..text..msg.chat_id_) or ""
+local photoCa = photoCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
+sendPhoto(msg.chat_id_,msg.id_,photo,photoCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end  
+end,nil)
 end
 end
 ------------------------------------------------------------------------
@@ -7736,9 +7806,8 @@ local Text = '⌔︙عدد التعديلات هنا *~ '..edit..'*'
 send(msg.chat_id_, msg.id_,Text) 
 end
 if text == 'مسح سحكاتي' or text == 'مسح تعديلاتي' then
-database:del(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..':'..msg.sender_user_id_)
-local Text = '⌔︙تم مسح جميع تعديلاتك '
-send(msg.chat_id_, msg.id_,Text) 
+database:del(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_)
+send(msg.chat_id_, msg.id_, '⌔︙تم مسح جميع تعديلاتك ') 
 end
 if text == 'جهاتي' then
 local addmem = database:get(bot_id.."BLACKBOTSS:Add:Memp"..msg.chat_id_..":"..msg.sender_user_id_) or 0
@@ -8422,13 +8491,11 @@ Text = [[
 *- Black Team .*
  — — — — — — — — — 
      
-[⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .](http://t.me/fBBBBB)
+[⌔︙BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .](http://t.me/fBBBBB) .
      
-[⌔︙ ToolS BLacK .](https://t.me/joinchat/AAAAAFPp_oZNV4U3n91zRQ)
+[⌔︙𝘛WSL Source BLacK .](http://t.me/TwSLBlackBot) .
      
-[⌔︙ 𝖳WSL Source BLacK .](http://t.me/TwSLBlackBot)
-     
-[⌔︙   𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖸𝗈𝗎𝗍𝖾𝖻 .](http://t.me/YOOTBOT)
+[⌔︙𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖸𝗈𝗎𝗍𝖾𝖻 .](http://t.me/YOOTBOT) .
 ]]
 send(msg.chat_id_, msg.id_,Text)
 end
@@ -8911,24 +8978,26 @@ if text == '/start' then
 if DevBLACKBOTSS(msg) then
 local Text = '⌔︙مرحبا بك في اوامر المطور الجاهزه'
 local keyboard = {
-{'الاحصائيات ⌔','تغيير المطور الاساسي ⌔'},
-{'تفعيل التواصل ⌔','تعطيل التواصل ⌔'},
-{'تنظيف الكروبات ⌔','تنظيف المشتركين ⌔'},
 {'تفعيل البوت الخدمي ⌔','تعطيل البوت الخدمي ⌔'},
-{'اذاعه خاص ⌔','المطورين ⌔','اذاعه ⌔'},
-{'اذاعه بالتوجيه ⌔','اذاعه بالتوجيه خاص ⌔'},
-{'تفعيل الاذاعه ⌔','تعطيل الاذاعه ⌔'},
 {'تفعيل المغادره ⌔','تعطيل المغادره ⌔'},
-{'مسح قائمه العام ⌔','مسح المطورين ⌔'},
-{'حذف كليشه ستارت ⌔','ضع كليشه ستارت ⌔'},
-{'- تعطيل الاشتراك الاجباري ⌔ .'},
-{'- تغير الاشتراك ⌔ .','حذف رساله الاشتراك ⌔ .'},
-{'- تفعيل الاشتراك الاجباري ⌔ .'},
+{'تفعيل الاذاعه ⌔','تعطيل الاذاعه ⌔'},
+{'ضع كليشه ستارت ⌔','حذف كليشه ستارت ⌔'},
+	     {'تغيير المطور الاساسي ⌔'},      
+{'تغيير اسم البوت ⌔','حذف اسم البوت ⌔'},
+{'تفعيل التواصل ⌔','تعطيل التواصل ⌔'},
+{'نسخه احتياطيه ⌔','رفع نسخه احتياطيه ⌔'},
+{'الاحصائيات ⌔'},                     
+{'الثانويين ⌔','مسح الثانويين ⌔'},
+{'المطورين ⌔','مسح المطورين ⌔'},
+{'قائمه العام ⌔','مسح قائمه العام ⌔'},
+{'- تفعيل الاشتراك الاجباري ⌔ .','- تعطيل الاشتراك الاجباري ⌔ .'},
+{'تنظيف الكروبات ⌔','تنظيف المشتركين ⌔'},
+{'اذاعه بالتوجيه ⌔','اذاعه بالتوجيه خاص ⌔'},
+{'- تغير رساله الاشتراك ⌔ .','حذف رساله الاشتراك ⌔ .'},
+{'- تعين قناة الاشتراك ⌔ .','- تغير الاشتراك ⌔ .'},
 {'- الاشتراك الاجباري ⌔ .'},
-{'- تعين قناة الاشتراك ⌔ .','- تغير رساله الاشتراك ⌔ .'},
+{'اذاعه خاص ⌔','اذاعه ⌔'},
 {'تحديث السورس ⌔','تحديث الملفات ⌔'},
-{'قائمه العام ⌔'},
-{'جلب نسخه احتياطيه ⌔'},
 {'الغاء ⌔'}
 }
 send_inline_key(msg.chat_id_,Text,keyboard)
@@ -9163,12 +9232,27 @@ end,nil)
 end
 return false
 end
+if database:get(bot_id.."BLACKBTSS:Set:Name:Bot"..msg.sender_user_id_) then 
+if text == "الغاء" or text == "الغاء ⌔" then   
+send(msg.chat_id_, msg.id_,"⌔︙ تم الغاء حفظ اسم البوت") 
+database:del(bot_id.."BLACKBTSS:Set:Name:Bot"..msg.sender_user_id_) 
+return false  
+end 
+database:del(bot_id.."BLACKBTSS:Set:Name:Bot"..msg.sender_user_id_) 
+database:set(bot_id.."BLACKBOTSS:Name:Bot",text) 
+send(msg.chat_id_, msg.id_, "⌔︙ تم حفظ اسم البوت")  
+return false
+end 
+if text == "تغيير اسم البوت ⌔" or text == "حذف اسم البوت ⌔" and VIP_DeV(msg) then 
+database:setex(bot_id.."BLACKBTSS:Set:Name:Bot"..msg.sender_user_id_,300,true) 
+send(msg.chat_id_, msg.id_,"⌔︙ ارسل لي الاسم الان ")  
+end
 if text =='تغيير المطور الاساسي ⌔' and VIP_DeV(msg) then
 send(msg.chat_id_, msg.id_,'⌔︙ارسل ايدي المطور الاساسي الجديد')
 database:set(bot_id..'LACKBOTSS:Ed:DevBots',true) 
 end
 if text =='تغيير المطور الاساسي ⌔' and not VIP_DeV(msg) then
-send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+send(msg.chat_id_, msg.id_,'⌔︙عذا الامر للمطور الاساسي فقط .')
 end
 if VIP_DeV(msg) then
 if text == "- الاشتراك الاجباري ⌔ ."  then  
@@ -9217,7 +9301,7 @@ send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة'
 return false  
 end
 elseif not VIP_DeV(msg) then
-send(msg.chat_id_, msg.id_,'⌔︙تسرسح')
+send(msg.chat_id_, msg.id_,'⌔︙عذا الامر للمطور الاساسي فقط .')
 end
 if database:get(bot_id.."LACKBOTSS:Ed:DevBots") then
 if text and text:match("^(%d+)$") then
@@ -9322,9 +9406,39 @@ if text == 'حذف كليشه ستارت ⌔' then
 database:del(bot_id..'Start:Bot') 
 send(msg.chat_id_, msg.id_,'⌔︙تم حذف كليشه ستارت') 
 end
-
-
-
+if text == ("الثانويين ⌔") then
+local list = database:smembers(bot_id.."DEV:Sudo:T")
+t = "\n⌔︙قائمة مطورين الثانويين للبوت \n — — — — — — — — — \n"
+for k,v in pairs(list) do
+local username = database:get(bot_id.."BLACKBOTSS:User:Name" .. v)
+if username then
+t = t..""..k.."- ([@"..username.."])\n"
+else
+t = t..""..k.."- (`"..v.."`)\n"
+end
+end
+if #list == 0 then
+t = "⌔︙لا يوجد مطورين ثانويين"
+end
+send(msg.chat_id_, msg.id_, t)
+end
+if text == ("مسح الثانويين ⌔") and VIP_DeV(msg) then
+database:del(bot_id.."DEV:Sudo:T")
+send(msg.chat_id_, msg.id_, "⌔︙ تم مسح قائمة المطورين الثانويين")
+end
+if text == ("مسح الثانويين ⌔") and not VIP_DeV(msg) then
+send(msg.chat_id_, msg.id_,'⌔︙عذا الامر للمطور الاساسي فقط .')
+end
+if text == 'رفع نسخه احتياطيه ⌔' then
+database:set(bot_id..'docu:Bots',true) 
+send(msg.chat_id_, msg.id_, "⌔︙ قم الان بارسال ملف النسخه الاحتياطيه")
+end
+if msg.content_.ID == "MessageDocument" and database:get(bot_id..'docu:Bots') then    
+local ID_FILE = msg.content_.document_.document_.persistent_id_ 
+local File_Name = msg.content_.document_.file_name_
+add_file(msg,msg.chat_id_,ID_FILE,File_Name)
+database:del(bot_id..'docu:Bots') 
+end
 if database:get(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_) then 
 if text and text:match("^الغاء$") then 
 send(msg.chat_id_, msg.id_, "⌔︙تم الغاء الامر ")
@@ -9409,7 +9523,8 @@ t = "⌔︙لا يوجد مطورين"
 end
 send(msg.chat_id_, msg.id_, t)
 end
-if text == 'جلب نسخه احتياطيه ⌔' then
+
+if text == 'نسخه احتياطيه ⌔' then
 local list = database:smembers(bot_id..'BLACKBOTSS:Chek:Groups')  
 local t = '{"BOT_ID": '..bot_id..',"GP_BOT":{'  
 for k,v in pairs(list) do   
