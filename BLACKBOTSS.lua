@@ -9300,9 +9300,11 @@ database:setex(bot_id.."add:ch:jm" .. msg.chat_id_ .. "" .. msg.sender_user_id_,
 send(msg.chat_id_, msg.id_, '⌔︙حسنآ ارسل لي معرف القناة')
 return false  
 end
+end
 if not VIP_DeV(msg) then
 if text == "- الاشتراك الاجباري ⌔ ."  or text == "- تفعيل الاشتراك الاجباري ⌔ ."  or text == "- تعطيل الاشتراك الاجباري ⌔ ."  or text == '- تغير رساله الاشتراك ⌔ .' or text == '- تغير الاشتراك ⌔ .' or text == "حذف رساله الاشتراك ⌔ ." or text == '- تعين قناة الاشتراك ⌔ .' then
 send(msg.chat_id_, msg.id_,'⌔︙عذا الامر للمطور الاساسي فقط .')
+return false  
 end
 end
 if database:get(bot_id.."LACKBOTSS:Ed:DevBots") then
