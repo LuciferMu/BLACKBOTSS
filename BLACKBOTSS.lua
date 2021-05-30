@@ -5801,7 +5801,7 @@ local Status_Gps = Get_Rank(msg.sender_user_id_,msg.chat_id_)
 local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..msg.sender_user_id_) or 0
 local audioCa = database:get(bot_id.."BLACKBOTSS:Add:Rd:Manager:AudioCa"..text..msg.chat_id_)  or ""
 local audioCa = audioCa:gsub('#username',(data.username_ or 'لا يوجد')):gsub('#name',data.first_name_):gsub('#id',msg.sender_user_id_):gsub('#edit',message_edit):gsub('#msgs',NumMsg):gsub('#stast',Status_Gps)
-sendAudio(msg.chat_id_,msg.id_,audio,audioCa)
+sendAudio(msg.chat_id_,msg.id_,audio,audioCa,audioCa)
 database:sadd(bot_id.."BLACKBOTSS:Spam:Group"..msg.sender_user_id_,text) 
 end
 if photo then 
@@ -7652,7 +7652,7 @@ name = mktlf[math.random(#mktlf)]
 database:del(bot_id.."Tshak:Set:Moktlf:Bot"..msg.chat_id_)
 database:set(bot_id.."Tshak::Set:Moktlf"..msg.chat_id_,name)
 name = string.gsub(name,"😸","😹😹😹😹😹😹😹😹😸😹😹😹😹")
-name = string.gsub(name,"☠","💀💀💀💀💀💀💀☠💀💀💀💀💀")
+name = string.gsub(name,"☠","💀💀💀💀💀💀💀☠💀💀💀??💀")
 name = string.gsub(name,"🐼","👻👻👻🐼👻👻👻👻👻👻👻")
 name = string.gsub(name,"🐇","🕊🕊🕊🕊🕊🐇🕊🕊🕊🕊")
 name = string.gsub(name,"🌑","🌚🌚🌚🌚🌚🌑🌚🌚🌚")
@@ -9662,7 +9662,7 @@ if DAata and DAata:match("^delallSticker(.*)$") and Addictive(data) then
 local delallSticker = DAata:match("^delallSticker(.*)$")
 local Text ="⌔︙تم اللغاء منع كل المتحركات"
 inline = {
-{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/fBBBBB'}},
+{{text = '⌔︙ BLacK 𝖲𝗈𝗎𝗋𝖼??  .',url='http://t.me/fBBBBB'}},
 }
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 send_inlin_key(Chat_id,Text,inline)
