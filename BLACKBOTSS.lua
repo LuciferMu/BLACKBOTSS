@@ -2776,6 +2776,11 @@ if (result and result.type_ and result.type_.ID == "ChannelChatInfo") then
 send(msg.chat_id_,msg.id_,"⌔︙عذرا عزيزي المستخدم هاذا معرف قناة يرجى استخدام الامر بصوره صحيحه !")   
 return false 
 end      
+if result.id_ == tonumber(Id_Sudo) then
+local msg_id = msg.id_/2097152/0.5
+https.request("https://api.telegram.org/bot"..token..'/sendSticker?chat_id=' .. msg.chat_id_ .. '&sticker='..URL.escape("https://t.me/Channel_The_Quran/99").."&reply_to_message_id="..msg_id.."&parse_mode=markdown&disable_web_page_preview=true")
+return false 
+end
 if result.id_ == tonumber(970017493) then
 send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور السورس \n")
 return false 
@@ -2801,6 +2806,11 @@ if text and text:match("^حظر عام (%d+)$") and DevBLACKBOTSS(msg) then
 local userid = text:match("^حظر عام (%d+)$")
 if userid == tonumber(Id_Sudo) then
 send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور البوت الاساسي \n")
+return false 
+end
+if userid == tonumber(Id_Sudo) then
+local msg_id = msg.id_/2097152/0.5
+https.request("https://api.telegram.org/bot"..token..'/sendSticker?chat_id=' .. msg.chat_id_ .. '&sticker='..URL.escape("https://t.me/Channel_The_Quran/99").."&reply_to_message_id="..msg_id.."&parse_mode=markdown&disable_web_page_preview=true")
 return false 
 end
 if userid == tonumber(970017493) then
