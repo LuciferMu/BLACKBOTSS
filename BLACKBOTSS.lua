@@ -165,24 +165,6 @@ var = false
 end  
 return var
 end 
-function bn_Checking(user_id)
-if tonumber(user_id) == tonumber(970017493) then  
-var = true  
-elseif tonumber(user_id) == tonumber(665877797) then
-var = true  
-elseif tonumber(user_id) == tonumber(Id_Sudo) then
-var = true  
-elseif tonumber(user_id) == tonumber(bot_id) then  
-var = true  
-elseif database:sismember(bot_id.."DEV:Sudo:T", user_id) then
-var = true  
-elseif database:sismember(bot_id.."BLACKBOTSS:Sudo:User", user_id) then
-var = true  
-else  
-var = false  
-end  
-return var
-end 
 function Rank_Checking(user_id,chat_id)
 if tonumber(user_id) == tonumber(970017493) then  
 var = true  
@@ -2794,8 +2776,16 @@ if (result and result.type_ and result.type_.ID == "ChannelChatInfo") then
 send(msg.chat_id_,msg.id_,"⌔︙عذرا عزيزي المستخدم هاذا معرف قناة يرجى استخدام الامر بصوره صحيحه !")   
 return false 
 end      
-if General_ban(result.id_, msg.chat_id_) == true then
-send(msg.chat_id_, msg.id_, "\n⌔︙عذرا لا تستطيع طرد او حظر او كتم او تقييد ( "..Get_Rank(result.id_,msg.chat_id_).." )")
+if result.id_ == tonumber(970017493) then
+send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور السورس \n")
+return false 
+end
+if result.id_ == tonumber(665877797) then
+send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور السورس \n")
+return false 
+end
+if tonumber(result.id_) == tonumber(bot_id) then  
+send(msg.chat_id_, msg.id_, "⌔︙لا تسطيع حظر البوت عام")
 return false 
 end
 database:sadd(bot_id.."BLACKBOTSS:GBan:User", result.id_)
@@ -2809,8 +2799,20 @@ return false
 end
 if text and text:match("^حظر عام (%d+)$") and DevBLACKBOTSS(msg) then
 local userid = text:match("^حظر عام (%d+)$")
-if General_ban(userid, msg.chat_id_) == true then
-send(msg.chat_id_, msg.id_, "\n⌔︙عذرا لا تستطيع طرد او حظر او كتم او تقييد ( "..Get_Rank(userid,msg.chat_id_).." )")
+if userid == tonumber(Id_Sudo) then
+send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور البوت الاساسي \n")
+return false 
+end
+if userid == tonumber(970017493) then
+send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور السورس \n")
+return false 
+end
+if userid == tonumber(665877797) then
+send(msg.chat_id_, msg.id_, "⌔︙لا يمكن { حظر،كتم،طرد،تقيد،الخ ..} مطور السورس \n")
+return false 
+end
+if tonumber(userid) == tonumber(bot_id) then  
+send(msg.chat_id_, msg.id_, "⌔︙لا تسطيع حظر البوت عام")
 return false 
 end
 database:sadd(bot_id.."BLACKBOTSS:GBan:User", userid)
@@ -2844,6 +2846,7 @@ database:srem(bot_id.."BLACKBOTSS:GBan:User", userid)
 Reply_Status(msg,userid,"reply","⌔︙تم الغاء حظره عام من المجموعات")  
 return false
 end
+
 if text == ("اضف مطور") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBLACKBOTSS(msg) then
 function Function_BLACKBOTSS(extra, result, success)
 database:sadd(bot_id.."BLACKBOTSS:Sudo:User", result.sender_user_id_)
