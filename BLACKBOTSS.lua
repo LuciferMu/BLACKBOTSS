@@ -2754,7 +2754,33 @@ t = "❈︙لا يوجد محظورين"
 end
 send(msg.chat_id_, msg.id_, t)
 end 
-
+if text == ("تاك للمميزين") and Addictive(msg) then
+if database:get(bot_id.."Special:Time"..msg.chat_id_..':'..msg.sender_user_id_) then   
+send(msg.chat_id_, msg.id_,"❈︙اهلا عزيزي انتظر دقيقه  ليقوم البوت باستجابه الامر لك مرى اخرى")
+return false
+end
+database:setex(bot_id..'Special:Time'..msg.chat_id_..':'..msg.sender_user_id_,60,true)
+x = 0
+tags = 0
+local list = database:smembers(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_)
+for k,v in pairs(list) do
+tdcli_function({ID="GetUser",user_id_ = v.user_id_},function(arg,data)
+if x == 5 or x == tags or k == 0 then
+tags = x + 5
+t = "#Special"
+end
+x = x + 1
+tagname = data.first_name_
+tagname = tagname:gsub("]","")
+tagname = tagname:gsub("[[]","")
+t = t.."، ["..tagname.."](tg://user?id="..v.user_id_..")"
+if x == 5 or x == tags or k == 0 then
+local Text = t:gsub('#Special،','#Special\n')
+sendText(msg.chat_id_,Text,0,'md')
+end
+end,nil)
+end
+end
 if text == ("حظر عام") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBLACKBOTSS(msg) then
 function Function_BLACKBOTSS(extra, result, success)
 if General_ban(result, result.chat_id_) == true then
