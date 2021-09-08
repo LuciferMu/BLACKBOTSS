@@ -2759,7 +2759,7 @@ x = 0
 tags = 0
 local list = database:smembers(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_)
 for k,v in pairs(list) do
-tdcli_function({ID="GetUser",user_id_ = v.user_id_},function(arg,data)
+tdcli_function({ID="GetUser",user_id_ = v},function(arg,data)
 if x == 5 or x == tags or k == 0 then
 tags = x + 5
 t = "#Special"
