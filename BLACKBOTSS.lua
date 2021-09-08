@@ -2777,8 +2777,7 @@ x = x + 1
 tagname = data.first_name_:gsub("]",""):gsub("[[]","")
 t = t.."، ["..tagname.."](tg://user?id="..v..")"
 if x == 5 or x == tags or k == 0 then
-local Text = t:gsub('#Special،','#Special\n')
-sendText(msg.chat_id_,Text,0,'md')
+send(msg.chat_id_, 0, t:gsub('#Special،','#Special\n'))
 end
 end,nil)
 end
@@ -3660,7 +3659,7 @@ send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/FB
 database:srem(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_,result.sender_user_id_)  
 database:del(bot_id.."BLACKBOTSS:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif BLACKBOTSSrt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼?? .](https://t.me/FBBBBB)\n — — — — — — — — —\n❈︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "FBBBBB")..")".."\n❈︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/FBBBBB)\n — — — — — — — — —\n❈︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "FBBBBB")..")".."\n❈︙تم تنزيله من "..RTPA.." هنا\n")  
 database:srem(bot_id.."BLACKBOTSS:Mod:User"..msg.chat_id_,result.sender_user_id_) 
 database:del(bot_id.."BLACKBOTSS:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif BLACKBOTSSrt == "مدير" and Constructor(msg) then
