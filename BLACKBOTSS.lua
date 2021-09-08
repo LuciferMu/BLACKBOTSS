@@ -2755,9 +2755,18 @@ end
 send(msg.chat_id_, msg.id_, t)
 end 
 if text == "تاك للمميزين" and Addictive(msg) then
+if database:get(bot_id.."Special:Time"..msg.chat_id_..':'..msg.sender_user_id_) then   
+send(msg.chat_id_, msg.id_,"❈︙اهلا عزيزي انتظر دقيقه  ليقوم البوت باستجابه الامر لك مرى اخرى")
+return false
+end
+database:setex(bot_id..'Special:Time'..msg.chat_id_..':'..msg.sender_user_id_,60,true)
 x = 0
 tags = 0
 local list = database:smembers(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_)
+if #list == 0 then
+send(msg.chat_id_, 0, "❈︙لا يوجد مميزين") 
+return false
+end
 for k,v in pairs(list) do
 tdcli_function({ID="GetUser",user_id_ = v},function(arg,data)
 if x == 5 or x == tags or k == 0 then
@@ -2765,13 +2774,11 @@ tags = x + 5
 t = "#Special"
 end
 x = x + 1
-tagname = data.first_name_
-tagname = tagname:gsub("]","")
-tagname = tagname:gsub("[[]","")
-t = t.."، ["..tagname.."](tg://user?id="..v.user_id_..")"
+tagname = data.first_name_:gsub("]",""):gsub("[[]","")
+t = t.."، ["..tagname.."](tg://user?id="..v..")"
 if x == 5 or x == tags or k == 0 then
 local Text = t:gsub('#Special،','#Special\n')
-send(msg.chat_id_, 0, Text)
+sendText(msg.chat_id_,Text,0,'md')
 end
 end,nil)
 end
@@ -3653,7 +3660,7 @@ send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/FB
 database:srem(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_,result.sender_user_id_)  
 database:del(bot_id.."BLACKBOTSS:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif BLACKBOTSSrt == "ادمن" and Owner(msg) then 
-send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼𝖾 .](https://t.me/FBBBBB)\n — — — — — — — — —\n❈︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "FBBBBB")..")".."\n❈︙تم تنزيله من "..RTPA.." هنا\n")  
+send(msg.chat_id_, msg.id_,"[- BLacK 𝖲𝗈𝗎𝗋𝖼?? .](https://t.me/FBBBBB)\n — — — — — — — — —\n❈︙العضو -› ["..data.first_name_.."](t.me/"..(data.username_ or "FBBBBB")..")".."\n❈︙تم تنزيله من "..RTPA.." هنا\n")  
 database:srem(bot_id.."BLACKBOTSS:Mod:User"..msg.chat_id_,result.sender_user_id_) 
 database:del(bot_id.."BLACKBOTSS:Comd:New:rt:User:"..msg.chat_id_..result.sender_user_id_)
 elseif BLACKBOTSSrt == "مدير" and Constructor(msg) then
