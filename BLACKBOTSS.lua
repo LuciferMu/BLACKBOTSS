@@ -12,32 +12,8 @@ sudos   = dofile("sudo.lua")
 bot_id  = token:match("(%d+)")  
 Id_Sudo = Sudo
 List_Sudos = {Id_Sudo,970017493,665877797}
-User = io.popen("whoami"):read('*a')
-IP = io.popen("dig +short myip.opendns.com @resolver1.opendns.com"):read('*a')
-name = io.popen("uname -a | awk '{ name = $2 } END { print name }'"):read('*a')
-port = io.popen("echo ${SSH_CLIENT} | awk '{ port = $3 } END { print port }'"):read('*a')
-Rtime = io.popen("date +'%Y-%m-%d %T'"):read('*a')
-print("\27[34m"..[[
->> Best Source in Telegram
->> Features fast and powerful
- ____  _        _    ____ _  __
-| __ )| |      / \  / ___| |/ /
-|  _ \| |     / _ \| |   | ' / 
-| |_) | |___ / ___ \ |___| . \ 
-|____/|_____/_/   \_\____|_|\_\
-
-Installation information
-
-User :: ]]..User..[[
-
-IP :: ]]..IP..[[
-
-name :: ]]..name..[[
-
-port :: ]]..port..[[
-
-time ::]]..Rtime.."\27[m")
-
+User = io.popen("whoami"):read('*a'):gsub('[\n\r]+', '')
+print("\27[34m"..[[>> Your bot has been activated on the black source]].."\27[m")
 io.popen("mkdir BLACKBOTSS_Files")
 t = "\27[35m".."\nAll Files Started : \n____________________\n"..'\27[m'
 i = 0
@@ -2754,34 +2730,6 @@ t = "❈︙لا يوجد محظورين"
 end
 send(msg.chat_id_, msg.id_, t)
 end 
-if text == "تاك للمميزين" and Addictive(msg) then
-if database:get(bot_id.."Special:Time"..msg.chat_id_..':'..msg.sender_user_id_) then   
-send(msg.chat_id_, msg.id_,"❈︙اهلا عزيزي انتظر دقيقه  ليقوم البوت باستجابه الامر لك مرى اخرى")
-return false
-end
-database:setex(bot_id..'Special:Time'..msg.chat_id_..':'..msg.sender_user_id_,60,true)
-x = 0
-tags = 0
-local list = database:smembers(bot_id.."BLACKBOTSS:Special:User"..msg.chat_id_)
-if #list == 0 then
-send(msg.chat_id_, 0, "❈︙لا يوجد مميزين") 
-return false
-end
-for k,v in pairs(list) do
-tdcli_function({ID="GetUser",user_id_ = v},function(arg,data)
-if x == 5 or x == tags or k == 0 then
-tags = x + 5
-t = "#Special"
-end
-x = x + 1
-tagname = data.first_name_:gsub("]",""):gsub("[[]","")
-t = t.."، ["..tagname.."](tg://user?id="..v..")"
-if x == 5 or x == tags or k == 0 then
-send(msg.chat_id_, 0, t:gsub('#Special،','#Special\n'))
-end
-end,nil)
-end
-end
 if text == ("حظر عام") and tonumber(msg.reply_to_message_id_) ~= 0 and DevBLACKBOTSS(msg) then
 function Function_BLACKBOTSS(extra, result, success)
 if General_ban(result, result.chat_id_) == true then
@@ -4907,6 +4855,41 @@ send(msg.chat_id_, msg.id_,"❈︙تم ازالة ترحيب المجموعه")
 end
 return false  
 end
+if text == "تفعيل اليوتيوب" and Addictive(msg) then  
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'❈︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ❈︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
+database:del(bot_id..'searchinbot'..msg.chat_id_) 
+send(msg.chat_id_, msg.id_,"❈︙تم تفعيل يوتيوب المجموعه") 
+return false  
+end
+if text == "تعطيل اليوتيوب" and Addictive(msg) then  
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'❈︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ❈︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
+database:set(bot_id..'searchinbot'..msg.chat_id_,true) 
+send(msg.chat_id_, msg.id_,"❈︙تم تعطيل يوتيوب المجموعه") 
+return false  
+end
+if not database:get(bot_id..'searchinbot'..msg.chat_id_) then
+if text and text:match('^بحث (.*)$') then 
+local TextSearch = text:match('^بحث (.*)$') 
+local msg_id = msg.id_/2097152/0.5
+local done = json:decode(https.request("https://black-source.tk/BlackTeAM/searchinbot.php?token="..token.."&chat_id="..msg.chat_id_.."&from="..msg.sender_user_id_.."&msg="..msg_id.."&Text="..TextSearch.."&n=s")) 
+end
+end
 if text == "قائمه المنع" and Addictive(msg) then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -5177,7 +5160,6 @@ else
 send(msg.chat_id_, msg.id_,"❈︙لا توجد قوانين هنا")   
 end    
 end
-
 if text == "الاوامر المضافه" and Constructor(msg) then
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -9729,6 +9711,41 @@ local listPhoto = database:smembers(bot_id.."BLACKBOTSS:List:Filter:Photo"..dela
 for k,v in pairs(listPhoto) do  
 database:srem(bot_id.."BLACKBOTSS:List:Filter:Photo"..delallph,v)  
 end  
+end
+if DAata and DAata:match("^(%d+):searchVid(.*)$") then
+id_from_user  = DAata:match("(%d+)")  
+local OnVid = DAata:gsub(':searchVid',''):gsub(id_from_user,'')
+msgidrp  = OnVid:match("(%d+)")
+local id_from_vid = DAata:gsub(':',''):gsub('searchVid',''):gsub(id_from_user,''):gsub(msgidrp,'')
+if tonumber(data.sender_user_id_) ~= tonumber(id_from_user) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+object = https.request('https://black-source.tk/Api/InfoVid.php?url=http://www.youtube.com/watch?v='..URL.escape(id_from_vid))
+objectend = JSON.decode(object)
+infovid = "*❈︙ اختر صيغه التنزيل الان*\n"
+keyboard = {} 
+keyboard.inline_keyboard = {
+{{text = 'فيديو', callback_data=id_from_user..":DownloadVid:"..msgidrp..":"..id_from_vid..":Mp4"},{text = 'صوت', callback_data=id_from_user..":DownloadVid:"..msgidrp..":"..id_from_vid..":mp3"},{text = 'بصمه', callback_data=id_from_user..":DownloadVid:"..msgidrp..":"..id_from_vid..":ogg"}},
+{{text = '❈︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/fBBBBB'}},
+}
+https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(infovid)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
+InfoVid = https.request('https://black-source.tk/Api/BotYoutube.php?Id='..URL.escape(id_from_vid))
+InfoVidend = JSON.decode(InfoVid)
+if InfoVidend.Info.video == "not" then  
+https.request("https://black-source.tk/BlackTeAM/searchinbot.php?V="..URL.escape(id_from_vid).."&ch=do")
+end
+end
+if DAata and DAata:match("^(%d+):DownloadVid(.*)$") then
+local notId  = DAata:match("(%d+)")  
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
+https.request("https://black-source.tk/BlackTeAM/searchinbot.php?token="..token.."&chat_id="..Chat_id.."&data="..URL.escape(DAata).."&n=do")
 end
 end
 if (data.ID == "UpdateNewMessage") then
