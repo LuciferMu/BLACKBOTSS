@@ -7315,9 +7315,9 @@ end
 if not database:get(bot_id..'BLACKBOTSS:Lock:ID:Bot'..msg.chat_id_) then
 if text and text:match("^ايدي @(.*)$") or text and text:match("^كشف @(.*)$")  then
 if text:match("^ايدي @(.*)$") then
-local username = text:match("^ايدي @(.*)$") 
+username = text:match("^ايدي @(.*)$") 
 elseif text:match("^كشف @(.*)$") then
-local username = text:match("^كشف @(.*)$") 
+username = text:match("^كشف @(.*)$") 
 end
 function Function_BLACKBOTSS(extra, result, success)
 if result.id_ then
