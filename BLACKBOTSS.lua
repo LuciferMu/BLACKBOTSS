@@ -10019,9 +10019,9 @@ audios = json:decode(data)
 if audios.Info == true then
 local Text ='❈︙تم اختيار المقطع الصوتي لك'
 inline = {
-{{text = '- التالي ⬅️',callback_data=DAata:match("(%d+)")..":voiceTo:"..DAata:match("^(%d+):voiceTo:(.*)$")}},
+{{text = '- التالي ⬅️',callback_data=DAata:match("(%d+)")..":voiceTo:"..Msg_id}},
 }
-send_inline_Media(Chat_id,"sendVoice","voice",audios.info,inline,DAata:match("^(%d+):voiceTo:(.*)$"),Text)  
+send_inline_Media(data.chat_id_,"sendVoice","voice",audios.info,inline,Msg_id,Text)  
 end
 end
 end
