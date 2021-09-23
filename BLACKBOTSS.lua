@@ -277,14 +277,6 @@ if not req.ok then
 return false end 
 return req 
 end
-function SendV(chat_id,reply,voice,caption) 
-SendVo = https.request("https://api.telegram.org/bot"..token.."/sendVoice?chat_id="..chat_id.."&voice="..URL.escape(voice).."&caption="..URL.escape(caption).."&reply_to_message_id"..reply.."&parse_mode=MARKDOWN")      
-return SendVo
-end 
-function SendP(chat_id,reply,photo,caption) 
-SendP = https.request("https://api.telegram.org/bot"..token.."/sendphoto?chat_id="..chat_id.."&photo="..URL.escape(photo).."&caption="..URL.escape(caption).."&reply_to_message_id"..reply.."&parse_mode=MARKDOWN")      
-return SendP
-end 
 function sendText(chat_id, text, reply_to_message_id, markdown) 
 send_api = "https://api.telegram.org/bot"..token 
 local url = send_api.."/sendMessage?chat_id=" .. chat_id .. "&text=" .. URL.escape(text) 
@@ -318,10 +310,13 @@ send_api = send_api.."&reply_to_message_id="..msg_id
 end 
 return s_api(send_api) 
 end
-function send_inline_Media(chat_id,iny,x,cx,inline,reply_id) 
+function send_inline_Media(chat_id,iny,x,cx,inline,reply_id,sh) 
 local keyboard = {} 
 keyboard.inline_keyboard = inline 
-local send_api = "https://api.telegram.org/bot"..token.."/"..iny.."?chat_id="..chat_id.."&"..x.."="..cx.."&reply_markup="..URL.escape(JSON.encode(keyboard)) 
+local send_api = "https://api.telegram.org/bot"..token.."/"..iny.."?chat_id="..chat_id.."&"..x.."="..cx.."&parse_mode=Markdown&reply_markup="..URL.escape(JSON.encode(keyboard)) 
+if sh then 
+send_api = send_api.."&caption="..sh 
+end 
 if reply_id then 
 local msg_id = reply_id/2097152/0.5
 send_api = send_api.."&reply_to_message_id="..msg_id 
@@ -1170,6 +1165,23 @@ send(msg.chat_id_, msg.id_,'['..t..']')
 end,nil) 
 end 
 end 
+if msg.content_.ID == "MessageChatAddMembers" and not database:get(bot_id..'thebot') then 
+if msg.content_.members_[0].id_ == tonumber(bot_id) then 
+tdcli_function ({ID = "GetUser",user_id_ = bot_id,},function(arg,data) 
+tdcli_function ({ID = "GetUserProfilePhotos",user_id_ = bot_id,offset_ = 0,limit_ = 1},function(extra,bo,success) 
+local Te = "❈︙ اهلا انا بوت حمايه مجموعات.\n❈︙قم برفعي مشرف في مجموعتك.\n❈︙بعدها قم بارسال تفعيل  ليتم  التفعيل.\n❈︙ اساعد على الحمايه والامان في المجموعه."
+if bo.photos_[0] then
+inline = {
+{{text = 'اضفني', url="https://t.me/"..data.username_.."?startgroup=new"}},
+}
+send_inline_Media(msg.chat_id_,"sendPhoto","photo",bo.photos_[0].sizes_[1].photo_.persistent_id_,inline,msg.id_,Te)  
+else
+send(msg.chat_id_, msg.id_,Te)
+end
+end,nil)
+end,nil)
+end
+end
 -------------------------------------------------------
 if msg.content_.ID == "MessagePinMessage" then
 if Constructor(msg) or tonumber(msg.sender_user_id_) == tonumber(bot_id) then 
@@ -5690,7 +5702,10 @@ send(msg.chat_id_, msg.id_,'❈︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-send(msg.chat_id_, msg.id_,"❈︙ارسل الكلمه التي تريد اضافتها")
+inlin = {
+{{text = '- اضغط هنا للالغاء.',callback_data=msg.sender_user_id_..":cancelRd:add"}},
+}
+send_inlin_key(msg.chat_id_,"❈︙ارسل الكلمه التي تريد اضافتها",inlin,msg.id_)
 database:set(bot_id.."BLACKBOTSS:Set:Manager:rd"..msg.sender_user_id_..":"..msg.chat_id_,true)
 return false 
 end
@@ -5704,7 +5719,10 @@ send(msg.chat_id_, msg.id_,'❈︙عـليك الاشـتࢪاك في قنـاة
 end
 return false
 end
-send(msg.chat_id_, msg.id_,"❈︙ارسل الكلمه التي تريد حذفها")
+inlin = {
+{{text = '- اضغط هنا للالغاء.',callback_data=msg.sender_user_id_..":cancelRd:del"}},
+}
+send_inlin_key(msg.chat_id_,"❈︙ارسل الكلمه التي تريد حذفها",inlin,msg.id_)
 database:set(bot_id.."BLACKBOTSS:Set:Manager:rd"..msg.sender_user_id_..":"..msg.chat_id_,"true2")
 return false 
 end
@@ -6142,7 +6160,7 @@ end
 if DevBLACKBOTSSe(msg.sender_user_id_)  then
 database:srem(bot_id.."DEV:Sudo:T",result.id_)
 database:srem(bot_id.."BLACKBOTSS:Sudo:User", result.id_)
-database:srem(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_,result.sender_user_id_)
+database:srem(bot_id.."BLACKBOTSS:Basic:Constructor"..msg.chat_id_,result.id_)
 database:srem(bot_id.."BLACKBOTSS:Constructor"..msg.chat_id_, result.id_)
 database:srem(bot_id.."BLACKBOTSS:Manager"..msg.chat_id_, result.id_)
 database:srem(bot_id.."BLACKBOTSS:Mod:User"..msg.chat_id_, result.id_)
@@ -7588,6 +7606,73 @@ end
 end
 end
 end
+if text and text:match('^(@[%a%d_]+)$') and database:get(bot_id..":Number_Add:"..msg.chat_id_..msg.sender_user_id_) then
+if database:sismember(bot_id..':List_Rolet:'..msg.chat_id_,text) then
+send(msg.chat_id_,msg.id_,"❈︙ المعرف ["..text.." ] موجود سابقا ارسل معرف لم يشارك")
+return false
+end 
+database:sadd(bot_id..':List_Rolet:'..msg.chat_id_,text)
+local CountAdd = database:get(bot_id..":Number_Add:"..msg.chat_id_..msg.sender_user_id_)
+local CountAll = database:scard(bot_id..':List_Rolet:'..msg.chat_id_)
+local CountUser = CountAdd - CountAll
+if tonumber(CountAll) == tonumber(CountAdd) then 
+database:del(bot_id..":Number_Add:"..msg.chat_id_..msg.sender_user_id_) 
+database:setex(bot_id..":Witting_StartGame:"..msg.chat_id_..msg.sender_user_id_,1400,true)  
+send(msg.chat_id_,msg.id_,"❈︙ تم حفظ المعرف (["..text.."])\n❈︙ تم اكمال العدد الكلي\n❈︙ ارسل (نعم) للبدء")
+return false
+end  
+send(msg.chat_id_,msg.id_,"❈︙ تم حفظ المعرف (["..text.."])\n❈︙ تبقى "..CountUser.." لاعبين ليكتمل العدد\n❈︙ ارسل المعرف التالي")
+return false
+end 
+if text and text:match("^(%d+)$") and database:get(bot_id..":Start_Rolet:"..msg.chat_id_..msg.sender_user_id_) then
+if text == "1" then
+send(msg.chat_id_, msg.id_," ❈︙ لا استطيع بدء اللعبه بلاعب واحد فقط")
+elseif text ~= "1" then
+database:set(bot_id..":Number_Add:"..msg.chat_id_..msg.sender_user_id_,text)  
+database:del(bot_id..":Start_Rolet:"..msg.chat_id_..msg.sender_user_id_)  
+send(msg.chat_id_, msg.id_,"❈︙ قم  بأرسال معرفات اللاعبين الان")
+return false
+end
+end 
+if text == 'روليت' then
+database:del(bot_id..":Number_Add:"..msg.chat_id_..msg.sender_user_id_) 
+database:del(bot_id..':List_Rolet:'..msg.chat_id_)  
+database:setex(bot_id..":Start_Rolet:"..msg.chat_id_..msg.sender_user_id_,3600,true)  
+send(msg.chat_id_, msg.id_, '❈︙ ارسل عدد اللاعبين للروليت')
+end
+if text == 'نعم' and database:get(bot_id..":Witting_StartGame:"..msg.chat_id_..msg.sender_user_id_) then
+local list = database:smembers(bot_id..':List_Rolet:'..msg.chat_id_) 
+if #list == 1 then 
+send(msg.chat_id_, msg.id_,  "❈︙ لم يكتمل العدد الكلي للاعبين" )
+elseif #list == 0 then 
+send(msg.chat_id_, msg.id_, "❈︙ عذرا لم تقوم باضافه اي لاعب" )
+return false
+end 
+local UserName = list[math.random(#list)]
+local User_ = UserName:match("^@(.*)$")
+function FunctionStatus(arg, result)
+if (result.id_) then
+database:incrby(bot_id.."Tshak:Add:Num"..msg.chat_id_..result.id_, 3)  
+database:del(bot_id..':List_Rolet:'..msg.chat_id_) 
+database:del(bot_id..":Witting_StartGame:"..msg.chat_id_..msg.sender_user_id_)
+send(msg.chat_id_, msg.id_,"❈︙الف مبروك يا ["..UserName.."] لقد فزت.\n❈︙تم اضافه 3 نقاط لك .\n❈︙للعب مره اخره ارسل ~ { `روليت` }")
+return false
+end
+end
+tdcli_function ({ID = "SearchPublicChat",username_ = UserName:match("^@(.*)$")}, FunctionStatus, nil)
+end
+if text == 'المشاركين' then
+local list = database:smembers(bot_id..':List_Rolet:'..msg.chat_id_) 
+local Text = '\n — — — — — — — — —\n' 
+if #list == 0 then 
+send(msg.chat_id_, msg.id_,'❈︙ لا يوجد لاعبين هنا')
+return false
+end  
+for k, v in pairs(list) do 
+Text = Text..k.."❈︙  » [" ..v.."] »\n"  
+end 
+send(msg.chat_id_, msg.id_, Text)
+end
 if text == "خمن" or text == "تخمين" then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -8092,11 +8177,32 @@ if text == "تفعيل الابراج" and Owner(msg) then
 send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل الابراج')
 database:set(bot_id.."BLACKBOTSS:brj_Bots"..msg.chat_id_,"open")
 end
+if text == "تعطيل كت تويت" and Owner(msg) then
+send(msg.chat_id_, msg.id_, '❈︙ تم تعطيل كت تويت')
+database:set(bot_id.."BLACKBOTSS:Qut"..msg.chat_id_,true)
+end
+if text == "تفعيل كت تويت" and Owner(msg) then
+send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل كت تويت')
+database:del(bot_id.."BLACKBOTSS:Qut"..msg.chat_id_)
+end
+if text == "كت" or  text == "كت تويت" and not  database:get(bot_id.."BLACKBOTSS:Qut"..msg.chat_id_) then
+local arr = {'آخر مرة زرت مدينة الملاهي؟','آخر مرة أكلت أكلتك المفضّلة؟','الوضع الحالي؟\n‏1. سهران\n‏2. ضايج\n‏3. أتأمل','آخر شيء ضاع منك؟','كلمة أخيرة لشاغل البال؟','طريقتك المعتادة في التخلّص من الطاقة السلبية؟','شهر من أشهر العام له ذكرى جميلة معك؟','كلمة غريبة من لهجتك ومعناها؟🤓','‏- شيء سمعته عالق في ذهنك هاليومين؟','متى تكره الشخص الذي أمامك حتى لو كنت مِن أشد معجبينه؟','‏- أبرز صفة حسنة في صديقك المقرب؟','هل تشعر أن هنالك مَن يُحبك؟','اذا اكتشفت أن أعز أصدقائك يضمر لك السوء، موقفك الصريح؟','أجمل شيء حصل معك خلال هاليوم؟','صِف شعورك وأنت تُحب شخص يُحب غيرك؟👀💔','كلمة لشخص غالي اشتقت إليه؟💕','آخر خبر سعيد، متى وصلك؟','أنا آسف على ....؟','أوصف نفسك بكلمة؟','صريح، مشتاق؟','‏- صريح، هل سبق وخذلت أحدهم ولو عن غير قصد؟','‏- ماذا ستختار من الكلمات لتعبر لنا عن حياتك التي عشتها الى الآن؟💭','‏- فنان/ة تود لو يدعوكَ على مائدة عشاء؟😁❤','‏- تخيّل شيء قد يحدث في المستقبل؟','‏- للشباب | آخر مرة وصلك غزل من فتاة؟🌚','شخص أو صاحب عوضك ونساك مُر الحياة ما اسمه ؟','| اذا شفت حد واعجبك وعندك الجرأه انك تروح وتتعرف عليه ، مقدمة الحديث شو راح تكون ؟.','كم مره تسبح باليوم','نسبة النعاس عندك حاليًا؟','لو فقط مسموح شخص واحد تتابعه فالسناب مين بيكون ؟','يهمك ملابسك تكون ماركة ؟','وش الشيء الي تطلع حرتك فيه و زعلت ؟','عندك أخوان او خوات من الرضاعة؟','عندك معجبين ولا محد درا عنك؟','أطول مدة قضيتها بعيد عن أهلك ؟','لو يجي عيد ميلادك تتوقع يجيك هدية؟','يبان عليك الحزن من " صوتك - ملامحك','وين تشوف نفسك بعد سنتين؟','وش يقولون لك لما تغني ؟','عندك حس فكاهي ولا نفسية؟','كيف تتصرف مع الشخص الفضولي ؟','كيف هي أحوال قلبك؟','حاجة تشوف نفسك مبدع فيها ؟','متى حبيت؟','شيء كل م تذكرته تبتسم ...','العلاقه السريه دايماً تكون حلوه؟','صوت مغني م تحبه','لو يجي عيد ميلادك تتوقع يجيك هدية؟','اذا احد سألك عن شيء م تعرفه تقول م اعرف ولا تتفلسف ؟','مع او ضد : النوم افضل حل لـ مشاكل الحياة؟','مساحة فارغة (..............) اكتب اي شيء تبين','اغرب اسم مر عليك ؟','عمرك كلمت فويس احد غير جنسك؟','اذا غلطت وعرفت انك غلطان تحب تعترف ولا تجحد؟','لو عندك فلوس وش السيارة اللي بتشتريها؟','وش اغبى شيء سويته ؟','شيء من صغرك ماتغير فيك؟','وش نوع الأفلام اللي تحب تتابعه؟','وش نوع الأفلام اللي تحب تتابعه؟','تجامل احد على حساب مصلحتك ؟','تتقبل النصيحة من اي شخص؟','كلمه ماسكه معك الفترة هذي ؟','متى لازم تقول لا ؟','اكثر شيء تحس انه مات ف مجتمعنا؟','تؤمن ان في "حُب من أول نظرة" ولا لا ؟.','تؤمن ان في "حُب من أول نظرة" ولا لا ؟.','هل تعتقد أن هنالك من يراقبك بشغف؟','اشياء اذا سويتها لشخص تدل على انك تحبه كثير ؟','اشياء صعب تتقبلها بسرعه ؟','اقتباس لطيف؟','أكثر جملة أثرت بك في حياتك؟','عندك فوبيا من شيء ؟.','اكثر لونين تحبهم مع بعض؟','أجمل بيت شعر سمعته ...','سبق وراودك شعور أنك لم تعد تعرف نفسك؟','تتوقع فيه احد حاقد عليك ويكرهك ؟','أجمل سنة ميلادية مرت عليك ؟','لو فزعت/ي لصديق/ه وقالك مالك دخل وش بتسوي/ين؟','وش تحس انك تحتاج الفترة هاذي ؟','يومك ضاع على؟','@منشن .. شخص تخاف منه اذا عصب ...','فيلم عالق في ذهنك لا تنساه مِن روعته؟','تختار أن تكون غبي أو قبيح؟','الفلوس او الحب ؟','أجمل بلد في قارة آسيا بنظرك؟','ما الذي يشغل بالك في الفترة الحالية؟','احقر الناس هو من ...','وين نلقى السعاده برايك؟','اشياء تفتخر انك م سويتها ؟','تزعلك الدنيا ويرضيك ؟','وش الحب بنظرك؟','افضل هديه ممكن تناسبك؟','كم في حسابك البنكي ؟','كلمة لشخص أسعدك رغم حزنك في يومٍ من الأيام ؟','عمرك انتقمت من أحد ؟!','ما السيء في هذه الحياة ؟','غنية عندك معاها ذكريات🎵🎻','/','أفضل صفة تحبه بنفسك؟','اكثر وقت تحب تنام فيه ...','أطول مدة نمت فيها كم ساعة؟','أصعب قرار ممكن تتخذه ؟','أفضل صفة تحبه بنفسك؟','اكثر وقت تحب تنام فيه ...','أنت محبوب بين الناس؟ ولاكريه؟','إحساسك في هاللحظة؟','اخر شيء اكلته ؟','تشوف الغيره انانيه او حب؟','اذكر موقف ماتنساه بعمرك؟','اكثر مشاكلك بسبب ؟','اول ماتصحى من النوم مين تكلمه؟','آخر مرة ضحكت من كل قلبك؟','لو الجنسية حسب ملامحك وش بتكون جنسيتك؟','اكثر شيء يرفع ضغطك','اذكر موقف ماتنساه بعمرك؟','لو قالوا لك  تناول صنف واحد فقط من الطعام لمدة شهر .','كيف تشوف الجيل ذا؟','ردة فعلك لو مزح معك شخص م تعرفه ؟','احقر الناس هو من ...','تحب ابوك ولا امك','آخر فيلم مسلسل والتقييم🎥؟','أقبح القبحين في العلاقة: الغدر أو الإهمال🤷🏼؟','كلمة لأقرب شخص لقلبك🤍؟','حط@منشن لشخص وقوله "حركتك مالها داعي"😼!','اذا جاك خبر مفرح اول واحد تعلمه فيه مين💃🏽؟','طبع يمكن يخليك تكره شخص حتى لو كنتتُحبه🙅🏻‍♀️؟','افضل ايام الاسبوع عندك🔖؟','يقولون ان الحياة دروس ، ماهو أقوى درس تعلمته من الحياة🏙؟','تاريخ لن تنساه📅؟','تحب الصيف والا الشتاء❄️☀️؟','شخص تحب تستفزه😈؟','شنو ينادونك وانت صغير (عيارتك)👼🏻؟','عقل يفهمك/ج ولا قلب يحبك/ج❤️؟','اول سفره لك وين رح تكون✈️؟','كم عدد اللي معطيهم بلوك👹؟','نوعية من الأشخاص تتجنبهم في حياتك❌؟','شاركنا صورة او فيديو من تصويرك؟📸','كم من عشره تعطي حظك📩؟','اكثر برنامج تواصل اجتماعي تحبه😎؟','من اي دوله انت🌍؟','اكثر دوله ودك تسافر لها🏞؟','مقولة "نكبر وننسى" هل تؤمن بصحتها🧓🏼؟','تعتقد فيه أحد يراقبك👩🏼‍💻؟','لو بيدك تغير الزمن ، تقدمه ولا ترجعه🕰؟','مشروبك المفضل🍹؟','‏قم بلصق آخر اقتباس نسخته؟💭','كم وزنك/ج طولك/ج؟🌚','كم كان عمرك/ج قبل ٨ سنين😈؟','دوله ندمت انك سافرت لها😁؟','لو قالو لك ٣ أمنيات راح تتحقق عالسريع شنو تكون🧞‍♀️؟','‏- نسبة احتياجك للعزلة من 10📊؟','شخص تحبه حظرك بدون سبب واضح، ردة فعلك🧐؟','مبدأ في الحياة تعتمد عليه دائما🕯؟'}
+send(msg.chat_id_, msg.id_,arr[math.random(#arr)])
+end 
 if text and text:match("^برج (.*)$") and database:get(bot_id.."BLACKBOTSS:brj_Bots"..msg.chat_id_) == "open" then
 local Textbrj = text:match("^برج (.*)$")
 gk = https.request('https://black-source.tk/BlackTeAM/Horoscopes.php?br='..URL.escape(Textbrj)..'')
 br = JSON.decode(gk)
 send(msg.chat_id_, msg.id_, br.ok.hso)
+end
+if text == "الابراج" and database:get(bot_id.."BLACKBOTSS:brj_Bots"..msg.chat_id_) == "open" then
+key = {
+{{text = "برج الجوزاء ♊",callback_data=msg.sender_user_id_.."Getprjالجوزاء"},{text ="برج الثور ♉",callback_data=msg.sender_user_id_.."Getprjالثور"},{text ="برج الحمل ♈",callback_data=msg.sender_user_id_.."Getprjالحمل"}},
+{{text = "برج العذراء ♍",callback_data=msg.sender_user_id_.."Getprjالعذراء"},{text ="برج الأسد ♌",callback_data=msg.sender_user_id_.."Getprjالاسد"},{text ="برج السرطان ♋",callback_data=msg.sender_user_id_.."Getprjالسرطان"}},
+{{text = "برج القوس ♐",callback_data=msg.sender_user_id_.."Getprjالقوس"},{text ="برج العقرب ♏",callback_data=msg.sender_user_id_.."Getprjالعقرب"},{text ="برج الميزان ♎",callback_data=msg.sender_user_id_.."Getprjالميزان"}},
+{{text = "برج الحوت ♓",callback_data=msg.sender_user_id_.."Getprjالحوت"},{text ="برج الدلو ♒",callback_data=msg.sender_user_id_.."Getprjالدلو"},{text ="برج الجدي ♑",callback_data=msg.sender_user_id_.."Getprjالجدي"}},
+}
+send_inline_key(msg.chat_id_,"❈︙ قم بأختيار برجك الان .",nil,key,msg.id_/2097152/0.5)
 end
 if text == "تعطيل حساب العمر" and Owner(msg) then
 send(msg.chat_id_, msg.id_, '❈︙ تم تعطيل حساب العمر')
@@ -8120,17 +8226,17 @@ if text == "تفعيل الانستا" and Owner(msg) then
 send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل الانستا')
 database:set(bot_id.."BLACKBOTSS:insta_bot"..msg.chat_id_,"open")
 end
-if text and text:match("^معلومات (.*)$") and database:get(bot_id.."BLACKBOTSS:insta_bot"..msg.chat_id_) == "open" then
-local Textni = text:match("^معلومات (.*)$")
-data,res = https.request('https://black-source.tk/BlackTeAM/infoInstagram.php?username='..URL.escape(Textni)..'')
-if res == 200 then
-muaed = json:decode(data)
-if muaed.Info == true then
-local msg_id = msg.id_/2097152/0.5
-SendP(msg.chat_id_, msg_id,muaed.ph, muaed.info) 
+if database:get(bot_id.."BLACKBOTSS:insta_bot"..msg.chat_id_) == "open" then
+if text and text:match("^معلومات (.*)$")  then
+request = https.request('https://black-source.tk/BlackTeAM/infoInstagram.php?username='..URL.escape(text:match("^معلومات (.*)$")))
+arrGet = JSON.decode(request)
+if arrGet.acid then
+send(msg.chat_id_, msg.id_,"❈︙الاسم : "..arrGet.name.."\n❈︙الايدي : "..arrGet.acid.."\n❈︙المنشورات : "..arrGet.posts.."\n❈︙يتابعك : "..arrGet.rs.."\n❈︙تتابع : "..arrGet.ng)
+else 
+send(msg.chat_id_, msg.id_,"❈︙عذرا تأكد من اليوزر")
 end
 end
-end
+end -- end
 if text == "تعطيل الافلام" and Owner(msg) then
 send(msg.chat_id_, msg.id_, '❈︙ تم تعطيل الافلام')
 database:set(bot_id.."BLACKBOTSS:movie_bot"..msg.chat_id_,"close")
@@ -8139,7 +8245,6 @@ if text == "تفعيل الافلام" and Owner(msg) then
 send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل الافلام')
 database:set(bot_id.."BLACKBOTSS:movie_bot"..msg.chat_id_,"open")
 end
-
 if text and text:match("^فلم (.*)$") and database:get(bot_id.."BLACKBOTSS:movie_bot"..msg.chat_id_) == "open" then
 local Textm = text:match("^فلم (.*)$")
 data,res = https.request('https://black-source.tk/BlackTeAM/movie.php?serch='..URL.escape(Textm)..'')
@@ -8163,12 +8268,10 @@ if res == 200 then
 audios = json:decode(data)
 if audios.Info == true then
 local Text ='❈︙تم اختيار المقطع الصوتي لك'
-keyboard = {} 
-keyboard.inline_keyboard = {
+inline = {
 {{text = '- Black TeAM .',url="t.me/FBBBBB"}},
 }
-local msg_id = msg.id_/2097152/0.5
-https.request("https://api.telegram.org/bot"..token..'/sendVoice?chat_id=' .. msg.chat_id_ .. '&voice='..URL.escape(audios.info)..'&caption=' .. URL.escape(Text).."&reply_to_message_id="..msg_id.."&parse_mode=markdown&disable_web_page_preview=true&reply_markup="..JSON.encode(keyboard))
+send_inline_Media(msg.chat_id_,"sendVoice","voice",audios.info,inline,msg.id_,Text)  
 end
 end
 end
@@ -8494,7 +8597,6 @@ if text == "تحديث" and DevBLACKBOTSS(msg) then
 dofile("BLACKBOTSS.lua")  
 send(msg.chat_id_, msg.id_, "❈︙تم التحديث")
 end
-
 if text == 'السورس' or text == 'سورس' or text == 'ياسورس' or text == 'يا سورس' then  
 local url,res = https.request('https://black-source.tk/BlackTeAM/ChatMember.php?id='..msg.sender_user_id_)
 data = JSON.decode(url)
@@ -8502,17 +8604,11 @@ if data.Ch_Member.info ~= true then
 send(msg.chat_id_,msg.id_,'❈︙شترك في قناة السورس اولآ @fBBBBB .')   
 return false 
 end
-Text = [[
-*- Black Team .*
- — — — — — — — — — 
-     
-[❈︙BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .](http://t.me/fBBBBB) .
-     
-[❈︙𝘛WSL Source BLacK .](http://t.me/TwSLBlackBot) .
-     
-[❈︙𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖸𝗈𝗎𝗍𝖾𝖻 .](http://t.me/YOOTBOT) .
-]]
-send(msg.chat_id_, msg.id_,Text)
+key = {
+{{text = '- 𝘉𝘭𝘢𝘤𝘬 𝘛𝘦𝘢𝘮 .',url="t.me/FBBBBB"}},
+{{text = '- 𝘊𝘢𝘭𝘭 𝘜𝘴 .',url="t.me/TwSLBlackBot"}},
+}
+send_inline_key(msg.chat_id_,"*- 𝘞𝘦𝘭𝘤𝘰𝘮𝘦 𝘵𝘰 𝘵𝘩𝘦 𝘣𝘭𝘢𝘤𝘬 𝘴𝘰𝘶𝘳𝘤𝘦 .*",nil,key,msg.id_/2097152/0.5)
 end
 if text == 'رابط الحذف' or text == 'بوت الحذف' then  
 if AddChannel(msg.sender_user_id_) == false then
@@ -9000,6 +9096,7 @@ local keyboard = {
 	     {'تغيير المطور الاساسي ⌔'},      
 {'تغيير اسم البوت ⌔','حذف اسم البوت ⌔'},
 {'تفعيل التواصل ⌔','تعطيل التواصل ⌔'},
+{'تفعيل التعريف ⌔','تعطيل التعريف ⌔'},
 {'نسخه احتياطيه ⌔','رفع نسخه احتياطيه ⌔'},
 {'الاحصائيات ⌔'},                     
 {'الثانويين ⌔','مسح الثانويين ⌔'},
@@ -9046,6 +9143,7 @@ end
 end
 if #list == 0 then
 send(msg.chat_id_, msg.id_,"❈︙لا يوجد صور ممنوعه"  )  
+return false
 end
 Zs = {
 {{text = '- اضغط هنا .',callback_data="delallph"..Sf}},
@@ -9080,6 +9178,7 @@ end
 if #list == 0 then
 t = "❈︙لا يوجد متحركات ممنوعه"  
 send(msg.chat_id_, msg.id_,t)  
+return false
 end
 ZsText = "❈︙هل تريد اللغاء منع كل المتحركات؟"
 Zs = {
@@ -9101,6 +9200,7 @@ end
 if #list == 0 then
 t = "❈︙لا يوجد ملصقات ممنوعه"  
 send(msg.chat_id_, msg.id_,t)  
+return false
 end
 ZsText = "❈︙هل تريد اللغاء منع كل  الملصقات؟"
 Zs = {
@@ -9160,6 +9260,14 @@ end
 sendText(Id_Sudo,Text..'\n'..'❈︙ ~ ['..string.sub(data.first_name_,0, 40)..'](tg://user?id='..data.id_..')',0,'md') 
 end,nil);end,nil);end,nil);end,nil);end 
 if DevBLACKBOTSS(msg) then
+if text == 'تفعيل التعريف ⌔' then  
+database:del(bot_id..'thebot') 
+send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل التعريف ') 
+end
+if text == 'تعطيل التعريف ⌔' then  
+database:set(bot_id..'thebot',true) 
+send(msg.chat_id_, msg.id_,'❈︙ تم تعطيل التعريف ') 
+end
 if text == 'تفعيل التواصل ⌔' then  
 database:del(bot_id..'Texting:In:Bv') 
 send(msg.chat_id_, msg.id_,'❈︙ تم تفعيل التواصل ') 
@@ -9654,6 +9762,22 @@ local From_id = data.id_
 local Msg_id = data.message_id_
 local msg_idd = Msg_id/2097152/0.5
 local DAata = data.payload_.data_
+if DAata and DAata:match("^(%d+)Getprj(.*)$") then
+local notId  = DAata:match("(%d+)")  
+local OnID = DAata:gsub('Getprj',''):gsub(notId,'')
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+gk = https.request('https://black-source.tk/BlackTeAM/Horoscopes.php?br='..URL.escape(OnID))
+br = JSON.decode(gk)
+x = {} 
+x.inline_keyboard = {
+{{text = '❈︙ BLacK 𝖲𝗈𝗎𝗋𝖼𝖾  .',url='http://t.me/fBBBBB'}},
+}
+return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(br.ok.hso)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
+end
 if DAata and DAata:match("^animation(.*)$") and Addictive(data) then  
 idch = DAata:match("-100(%d+)")
 local idchci = "-100"..idch
@@ -9762,6 +9886,21 @@ return false
 end
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 https.request("https://black-source.tk/BlackTeAM/searchinbot.php?token="..token.."&chat_id="..Chat_id.."&data="..URL.escape(DAata).."&n=do")
+end
+if DAata and DAata:match("^(%d+):cancelRd(.*)$") then
+local notId  = DAata:match("(%d+)")  
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+if database:get(bot_id.."BLACKBOTSS:Set:Manager:rd"..data.sender_user_id_..":"..data.chat_id_) then
+database:del(bot_id.."BLACKBOTSS:Set:Manager:rd"..data.sender_user_id_..":"..data.chat_id_)
+https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape("❈︙تم الغاء الامر بنجاح").."&show_alert=true")
+else
+https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
+end
 end
 end
 if (data.ID == "UpdateNewMessage") then
