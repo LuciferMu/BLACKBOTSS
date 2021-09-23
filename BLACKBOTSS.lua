@@ -1172,10 +1172,11 @@ tdcli_function ({ID = "GetUser",user_id_ = bot_id,},function(arg,data)
 tdcli_function ({ID = "GetUserProfilePhotos",user_id_ = bot_id,offset_ = 0,limit_ = 1},function(extra,bo,success) 
 local Te = "❈︙ اهلا انا بوت حمايه مجموعات.\n❈︙قم برفعي مشرف في مجموعتك.\n❈︙بعدها قم بارسال تفعيل  ليتم  التفعيل.\n❈︙ اساعد على الحمايه والامان في المجموعه."
 if bo.photos_[0] then
-inline = {
-{{text = 'اضفني', url="https://t.me/"..data.username_.."?startgroup=new"}},
+x = {} 
+x.inline_keyboard = {
+{{text ="- اضفني ",url="https://t.me/"..data.username_.."?startgroup=new"}},
 }
-send_inline_Media(msg.chat_id_,"sendPhoto","photo",bo.photos_[0].sizes_[1].photo_.persistent_id_,inline,msg.id_,Te)  
+https.request("https://api.telegram.org/bot"..token..'/sendPhoto?chat_id='..msg.chat_id_..'&photo='..bo.photos_[0].sizes_[1].photo_.persistent_id_..'&caption='..URL.escape(Te)..'&message_id='..msg.id_..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
 else
 send(msg.chat_id_, msg.id_,Te)
 end
