@@ -512,7 +512,8 @@ send(msg.chat_id_, msg.id_,NameUser.."\n"..text)
 return false
 end
 if status == "reply" then
-send(msg.chat_id_, msg.id_,NameUserr.."\n"..text)
+inlin = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:del"}}, }
+send_inlin_key(msg.chat_id_,NameUserr.."\n"..text,inlin,msg.id_)
 return false
 end
 if status == "reply_Add" then
@@ -7220,10 +7221,11 @@ local get_id = get_id:gsub('#game',Num_Games)
 local get_id = get_id:gsub('#photos',Total_Photp) 
 sendPhoto(msg.chat_id_,msg.id_,taha.photos_[0].sizes_[1].photo_.persistent_id_,get_id)
 else
-sendPhoto(msg.chat_id_,msg.id_,taha.photos_[0].sizes_[1].photo_.persistent_id_,'❈︙'..Description..'\n❈︙ايديك -› '..Id..'\n❈︙معرفك -› '..UserName_User..'\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games)
+sendPhoto(msg.chat_id_,msg.id_,taha.photos_[0].sizes_[1].photo_.persistent_id_,'❈︙'..Description..'\n❈︙ايديك -› '..Id..'\n❈︙معرفك -› '..UserName_User..'\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games)  
 end
 else
-send(msg.chat_id_, msg.id_,'❈︙ليس لديك صوره \n'..'\n*❈︙ايديك -› '..Id..'\n❈︙معرفك -›* ['..UserName_User..']*\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games..'*') 
+inline = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:del"}}, }
+send_inlin_key(msg.chat_id_,'❈︙ليس لديك صوره \n'..'\n*❈︙ايديك -› '..Id..'\n❈︙معرفك -›* ['..UserName_User..']*\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games..'*',inline,msg.id_)
 end
 else
 if get_id then
@@ -7237,9 +7239,11 @@ local get_id = get_id:gsub('#auto',TotalMsg)
 local get_id = get_id:gsub('#Description',Description) 
 local get_id = get_id:gsub('#game',Num_Games) 
 local get_id = get_id:gsub('#photos',Total_Photp) 
-send(msg.chat_id_, msg.id_,'['..get_id..']') 
+inline = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:add"}}, }
+send_inlin_key(msg.chat_id_,'['..get_id..']',inline,msg.id_)
 else
-send(msg.chat_id_, msg.id_,'\n*❈︙ايديك -› '..Id..'\n❈︙معرفك -›* ['..UserName_User..']*\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games..'*') 
+inline = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:add"}}, }
+send_inlin_key(msg.chat_id_,'\n*❈︙ايديك -› '..Id..'\n❈︙معرفك -›* ['..UserName_User..']*\n❈︙رتبتك -› '..Status_Gps..'\n❈︙رسائلك -› '..NumMsg..'\n❈︙السحكات -› '..message_edit..' \n❈︙تتفاعلك -› '..TotalMsg..'\n❈︙ مجوهراتك -› '..Num_Games..'*',inline,msg.id_)
 end
 end
 end,nil)   
@@ -7280,9 +7284,8 @@ send(msg.chat_id_, msg.id_,'❈︙تم تنظيف *~ '..Number..'* رساله .'
 database:setex(bot_id..'BLACKBOTSS:Delete:Time'..msg.chat_id_..':'..msg.sender_user_id_,300,true)
 end
 end
-
-
-if text == 'ايدي' and tonumber(msg.reply_to_message_id_) > 0 and not database:get(bot_id..'BLACKBOTSS:Lock:ID:Bot'..msg.chat_id_) then
+if not database:get(bot_id..'BLACKBOTSS:Lock:ID:Bot'..msg.chat_id_) then
+if text == 'ايدي' and tonumber(msg.reply_to_message_id_) > 0 or text == 'كشف' and tonumber(msg.reply_to_message_id_) > 0 then
 function Function_BLACKBOTSS(extra, result, success)
 tdcli_function ({ID = "GetUser",user_id_ = result.sender_user_id_},function(arg,data) 
 if data.first_name_ == false then
@@ -7301,15 +7304,21 @@ local Status_Gps = Get_Rank(Id,msg.chat_id_)
 local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..data.id_) or 0
 local Num_Games = database:get(bot_id.."Tshak:Msg_User"..msg.chat_id_..":"..data.id_) or 0
 local Add_Mem = database:get(bot_id.."BLACKBOTSS:Add:Memp"..msg.chat_id_..":"..data.id_) or 0
-send(msg.chat_id_, msg.id_,'*❈︙ايديه - '..Id..'\n❈︙رسائله - '..NumMsg..'\n❈︙معرفه - *['..UserName_User..']*\n❈︙تفاعله - '..TotalMsg..'\n❈︙رتبته - '..Status_Gps..'\n❈︙تعديلاته - '..message_edit..'\n❈︙جهاته - '..Add_Mem..'\n❈︙نوع الكشف - بالرد \n*') 
+inline = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:add"}}, }
+send_inlin_key(msg.chat_id_,'*❈︙ايديه - '..Id..'\n❈︙رسائله - '..NumMsg..'\n❈︙معرفه - *['..UserName_User..']*\n❈︙تفاعله - '..TotalMsg..'\n❈︙رتبته - '..Status_Gps..'\n❈︙تعديلاته - '..message_edit..'\n❈︙جهاته - '..Add_Mem..'\n❈︙نوع الكشف - بالرد \n*',inline,msg.id_)
 end,nil)   
 end
 tdcli_function ({ID = "GetMessage",chat_id_ = msg.chat_id_,message_id_ = tonumber(msg.reply_to_message_id_)}, Function_BLACKBOTSS, nil)
 return false
 end
-
-if text and text:match("^ايدي @(.*)$")  and not database:get(bot_id..'BLACKBOTSS:Lock:ID:Bot'..msg.chat_id_) then
+end
+if not database:get(bot_id..'BLACKBOTSS:Lock:ID:Bot'..msg.chat_id_) then
+if text and text:match("^ايدي @(.*)$") or text and text:match("^كشف @(.*)$")  then
+if text:match("^ايدي @(.*)$") then
 local username = text:match("^ايدي @(.*)$") 
+elseif text:match("^كشف @(.*)$") then
+local username = text:match("^كشف @(.*)$") 
+end
 function Function_BLACKBOTSS(extra, result, success)
 if result.id_ then
 tdcli_function ({ID = "GetUser",user_id_ = result.id_},function(arg,data) 
@@ -7325,7 +7334,8 @@ local Status_Gps = Get_Rank(Id,msg.chat_id_)
 local message_edit = database:get(bot_id..'BLACKBOTSS:message_edit'..msg.chat_id_..data.id_) or 0
 local Num_Games = database:get(bot_id.."Tshak:Msg_User"..msg.chat_id_..":"..data.id_) or 0
 local Add_Mem = database:get(bot_id.."BLACKBOTSS:Add:Memp"..msg.chat_id_..":"..data.id_) or 0
-send(msg.chat_id_, msg.id_,'*❈︙ايديه - '..Id..'\n❈︙رسائله - '..NumMsg..'\n❈︙معرفه - *['..UserName_User..']*\n❈︙تفاعله - '..TotalMsg..'\n❈︙رتبته - '..Status_Gps..'\n❈︙تعديلاته - '..message_edit..'\n❈︙جهاته - '..Add_Mem..'\n❈︙نوع الكشف - بالمعرف \n*') 
+inline = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:add"}}, }
+send_inlin_key(msg.chat_id_,'*❈︙ايديه - '..Id..'\n❈︙رسائله - '..NumMsg..'\n❈︙معرفه - *['..UserName_User..']*\n❈︙تفاعله - '..TotalMsg..'\n❈︙رتبته - '..Status_Gps..'\n❈︙تعديلاته - '..message_edit..'\n❈︙جهاته - '..Add_Mem..'\n❈︙نوع الكشف - بالمعرف \n*',inline,msg.id_)
 end,nil)   
 else
 send(msg.chat_id_, msg.id_,'❈︙لا يوجد حساب بهاذا المعرف')
@@ -7333,6 +7343,7 @@ end
 end
 tdcli_function ({ID = "SearchPublicChat",username_ = username}, Function_BLACKBOTSS, nil)
 return false
+end
 end
 if text == "سمايلات" or text == "سمايل" then  
 if AddChannel(msg.sender_user_id_) == false then
@@ -7530,6 +7541,13 @@ database:incrby(bot_id.."Tshak:Add:Num"..msg.chat_id_..msg.sender_user_id_, 1)
 end
 database:set(bot_id.."Tshak:Set:Maany"..msg.chat_id_,true)
 end 
+if text == "حجره ورقه مقص" then  
+key = {
+{{text = 'العب مع البوت',callback_data=msg.sender_user_id_.."playwbotme"}},
+{{text = 'اللعب مع اصدقائك',switch_inline_query=msg.sender_user_id_}},
+}
+send_inline_key(msg.chat_id_,'❈︙ اهلا بك في لعبه حجر ورق مقص يمكنك العب معي او مع اصدقائك .',nil,key,msg.id_/2097152/0.5)
+end
 if text == "العكس" then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -7876,14 +7894,16 @@ Teext = [[
 ❈︙قائمه الالعاب الموجوده
  — — — — — — — — — 
 ❈︙لعبة البات -› بات
-❈︙لعبة التخمين -› خمن
-❈︙لعبه الاسرع -› الاسرع
-❈︙لعبة السمايلات -› سمايلات
-❈︙لعبة المختلف -› المختلف
 ❈︙لعبة الامثله -› امثله
-❈︙لعبة العكس -› العكس 
-❈︙لعبة الحزوره -› حزوره
+❈︙لعبة التخمين -› خمن
 ❈︙لعبة المعاني -› معاني
+❈︙لعبة روليت -> روليت
+❈︙لعبه الاسرع -› الاسرع
+❈︙لعبة العكس -› العكس
+❈︙لعبة الحزوره -› حزوره
+❈︙لعبة المختلف -› المختلف
+❈︙لعبة السمايلات -› سمايلات
+❈︙لعبة حجره ورقه مقص -> حجره ورقه مقص
  — — — — — — — — — 
 ❈︙مجوهراتي -› لعرض عدد الارباح
 ❈︙بيع مجوهراتي + العدد -› لستبدال كل مجوهره ب50 رساله
@@ -8269,7 +8289,7 @@ audios = json:decode(data)
 if audios.Info == true then
 local Text ='❈︙تم اختيار المقطع الصوتي لك'
 inline = {
-{{text = '- Black TeAM .',url="t.me/FBBBBB"}},
+{{text = '- التالي ⬅️',callback_data=msg.sender_user_id_..":voiceTo:"..msg.id_}},
 }
 send_inline_Media(msg.chat_id_,"sendVoice","voice",audios.info,inline,msg.id_,Text)  
 end
@@ -8621,6 +8641,19 @@ end
 return false
 end
 Text = [[⌔ ︙  @LC6BOT   ]]
+send(msg.chat_id_, msg.id_,Text)
+end
+if text == 'همسه' or text == 'بوت الهمسه' then  
+if AddChannel(msg.sender_user_id_) == false then
+local textchuser = database:get(bot_id..'text:ch:user')
+if textchuser then
+send(msg.chat_id_, msg.id_,'['..textchuser..']')
+else
+send(msg.chat_id_, msg.id_,'❈︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ . \n ❈︙قنـاة البـوت ←  ['..database:get(bot_id..'add:ch:username')..']')
+end
+return false
+end
+Text = [[⌔ ︙ @XGeBoT   ]]
 send(msg.chat_id_, msg.id_,Text)
 end
 if text == 'الاوامر' and Addictive(msg) then  
@@ -9751,6 +9784,77 @@ end --- Chat_Type = 'UserBot'
 end
 end
 function tdcli_update_callback(data)
+if data.ID == "UpdateNewInlineCallbackQuery" then
+local Text = data.payload_.data_
+if Text and Text:match("^(%d+)cle(.*)$")  then  
+local idpla  = Text:match("(%d+)")  
+local OnID = Text:gsub('cle',''):gsub(idpla,'')
+if tonumber(data.sender_user_id_) == tonumber(idpla) then
+https.request("https://api.telegram.org/bot"..token..'/answerCallbackQuery?callback_query_id='..data.id_..'&text='..URL.escape('❈︙انت من بدأت اللعبه انتظر من فضلك')..'&show_alert=true')
+return false
+end
+if tonumber(data.sender_user_id_) ~= tonumber(idpla) then
+tdcli_function ({ID = "GetUser",user_id_ = data.sender_user_id_},function(arg,me) 
+tdcli_function ({ID = "GetUser",user_id_ = idpla},function(arg,you) 
+if OnID == "faz" then
+EiMsg = "👤︙الفائز : ( "..me.first_name_.." )\n🧟‍♀️︙حظ اوفر ( "..you.first_name_.." )"
+elseif OnID== "lose" then
+EiMsg = "👤︙الفائز : ( "..you.first_name_.." )\n🧟‍♀️︙حظ اوفر ( "..me.first_name_.." )"
+elseif OnID== "tadl" then
+EiMsg = "👤︙النتيجه تعادل : ( "..you.first_name_.." )|( "..me.first_name_.." ) "
+end
+x = {} 
+x.inline_keyboard = {
+{{text ="اللعب مجددا",switch_inline_query=math.random(8282828283,28383883833)}},
+}
+https.request("https://api.telegram.org/bot"..token..'/editMessageText?inline_message_id='..data.inline_message_id_..'&text='..URL.escape(EiMsg)..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
+end,nil)   
+end,nil)   
+end
+end
+end
+if data.ID == "UpdateNewInlineQuery" then
+local Text = data.query_
+if Text then
+local input_message_content = {message_text = "✂️︙ حجره ورقه مقص\n👤︙ اضغط للعب ", parse_mode = 'Markdown'}	
+local resuult = {{
+type = 'article',
+id = math.random(1,64),
+title = 'حجره',
+input_message_content = input_message_content,
+reply_markup = {
+inline_keyboard ={
+{{text ="- مقص ", callback_data = data.sender_user_id_.."clelose"},{text ="- ورقه ", callback_data = data.sender_user_id_.."clefaz"},{text ="- حجره", callback_data = data.sender_user_id_.."cletadl"}}
+}
+},
+thumb_url = 'https://black-source.tk/geam1.jpg'
+},{
+type = 'article',
+id = math.random(1,64),
+title = 'ورقه',
+input_message_content = input_message_content,
+reply_markup = {
+inline_keyboard ={
+{{text ="- مقص ", callback_data = data.sender_user_id_.."clefaz"},{text ="- ورقه ", callback_data = data.sender_user_id_.."clelose"},{text ="- حجره", callback_data = data.sender_user_id_.."cletadl"}}
+}
+},
+thumb_url = 'https://black-source.tk/geam2.jpg'	
+},{
+type = 'article',
+id = math.random(1,64),
+title = 'مقص',
+input_message_content = input_message_content,
+reply_markup = {
+inline_keyboard ={
+{{text ="- مقص ", callback_data = data.sender_user_id_.."cletadl"},{text ="- ورقه ", callback_data = data.sender_user_id_.."clelose"},{text ="- حجره", callback_data = data.sender_user_id_.."clefaz"}}
+}
+},
+thumb_url = 'https://black-source.tk/geam3.jpg'	
+}
+}
+https.request("https://api.telegram.org/bot"..token..'/answerInlineQuery?inline_query_id='..data.id_..'&switch_pm_text=اختر&switch_pm_parameter=start&results='..JSON.encode(resuult))
+end
+end
 if data.ID == "UpdateChannel" then 
 if data.channel_.status_.ID == "ChatMemberStatusKicked" then 
 database:srem(bot_id..'BLACKBOTSS:Chek:Groups','-100'..data.channel_.id_)  
@@ -9901,6 +10005,62 @@ https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callb
 else
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
 end
+end
+if DAata and DAata:match("^(%d+):voiceTo(.*)$") then
+if tonumber(data.sender_user_id_) ~= tonumber(DAata:match("(%d+)")) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
+data,res = https.request('https://black-source.tk/BlackTeAM/audios.php')
+if res == 200 then
+audios = json:decode(data)
+if audios.Info == true then
+local Text ='❈︙تم اختيار المقطع الصوتي لك'
+inline = {
+{{text = '- التالي ⬅️',callback_data=DAata:match("(%d+)")..":voiceTo:"..DAata:match("^(%d+):voiceTo:(.*)$")}},
+}
+send_inline_Media(Chat_id,"sendVoice","voice",audios.info,inline,DAata:match("^(%d+):voiceTo:(.*)$"),Text)  
+print("\27[34m"..[[>> New song request >> original sender > ]]..DAata:match("(%d+)")..[[ >>New student  > ]]..data.sender_user_id_..[[ >> msg id  > ]]..DAata:match("^(%d+):voiceTo:(.*)$").."\27[m")
+end
+end
+end
+if DAata and DAata:match("^(%d+)playwbot(.*)$") then
+local notId  = DAata:match("(%d+)")  
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+x = {} 
+x.inline_keyboard = {
+{{text ="- مقص ",callback_data=data.sender_user_id_.."gmemqs"},{text ="- ورقه ",callback_data=data.sender_user_id_.."gmewra"},{text ="- حجره",callback_data=data.sender_user_id_.."gmehjra"}},
+}
+return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape("✂️︙ حجره ورقه مقص\n👤︙ اضغط للعب معي ")..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
+end
+if DAata and DAata:match("^(%d+)gme(.*)$") then
+local notId  = DAata:match("(%d+)")  
+local OnID = DAata:gsub('gme',''):gsub(notId,'')
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+x = {} 
+x.inline_keyboard = {
+{{text = '❈︙ العب مجددا',callback_data=data.sender_user_id_.."playwbotme"}},
+}
+local r = {"mqs","hjra","wra","hjra","mqs","wra"} 
+btme = r[math.random(#r)]
+if OnID == btme then
+rr="🧟‍♀️︙النتيجه تعادل"
+elseif OnID=="hjra" and btme=="mqs" or OnID=="mqs" and btme=="wra" or OnID=="wra" and btme=="hjra" then
+rr="🤴︙انت الفائز"
+elseif OnID=="mqs" and btme=="hjra" or OnID=="hjra" and btme=="wra"  or OnID=="wra" and btme=="mqs" then
+rr="🧙🏻‍♂️︙انا فزت حظ اوفر لك"
+end
+return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(rr)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
 end
 end
 if (data.ID == "UpdateNewMessage") then
