@@ -10022,7 +10022,6 @@ inline = {
 {{text = '- التالي ⬅️',callback_data=DAata:match("(%d+)")..":voiceTo:"..DAata:match("^(%d+):voiceTo:(.*)$")}},
 }
 send_inline_Media(Chat_id,"sendVoice","voice",audios.info,inline,DAata:match("^(%d+):voiceTo:(.*)$"),Text)  
-print("\27[34m"..[[>> New song request >> original sender > ]]..DAata:match("(%d+)")..[[ >>New student  > ]]..data.sender_user_id_..[[ >> msg id  > ]]..DAata:match("^(%d+):voiceTo:(.*)$").."\27[m")
 end
 end
 end
