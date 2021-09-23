@@ -8288,10 +8288,8 @@ if res == 200 then
 audios = json:decode(data)
 if audios.Info == true then
 local Text ='❈︙تم اختيار المقطع الصوتي لك'
-inline = {
-{{text = '- التالي ⬅️',callback_data=msg.sender_user_id_..":voiceTo:"..msg.id_}},
-}
-send_inline_Media(msg.chat_id_,"sendVoice","voice",audios.info,inline,msg.id_,Text)  
+inlin = {{{text = '- اضغط هنا للمسح.',callback_data=msg.sender_user_id_..":cancelRd:del"}}, }
+send_inline_Media(msg.chat_id_,"sendVoice","voice",audios.info,inlin,msg.id_,Text)  
 end
 end
 end
@@ -10004,25 +10002,6 @@ https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..
 https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape("❈︙تم الغاء الامر بنجاح").."&show_alert=true")
 else
 https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
-end
-end
-if DAata and DAata:match("^(%d+):voiceTo(.*)$") then
-if tonumber(data.sender_user_id_) ~= tonumber(DAata:match("(%d+)")) then  
-local notText = '❈︙عذرا الاوامر هذه لا تخصك'
-https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
-return false
-end
-https.request("https://api.telegram.org/bot"..token.."/deleteMessage?chat_id="..Chat_id.."&message_id="..msg_idd)
-data,res = https.request('https://black-source.tk/BlackTeAM/audios.php')
-if res == 200 then
-audios = json:decode(data)
-if audios.Info == true then
-local Text ='❈︙تم اختيار المقطع الصوتي لك'
-inline = {
-{{text = '- التالي ⬅️',callback_data=DAata:match("(%d+)")..":voiceTo:"..Msg_id}},
-}
-send_inline_Media(data.chat_id_,"sendVoice","voice",audios.info,inline,Msg_id,Text)  
-end
 end
 end
 if DAata and DAata:match("^(%d+)playwbot(.*)$") then
