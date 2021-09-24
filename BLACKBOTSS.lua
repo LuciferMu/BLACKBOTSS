@@ -7549,6 +7549,10 @@ key = {
 }
 send_inline_key(msg.chat_id_,'❈︙ اهلا بك في لعبه حجر ورق مقص يمكنك العب معي او مع اصدقائك .',nil,key,msg.id_/2097152/0.5)
 end
+if text == "المتشابهات" then  
+key = {{{text ="بدأ اللعبه",callback_data=msg.sender_user_id_..":playstart:add"}}, }
+send_inline_key(msg.chat_id_,'❈︙لان قم ببدأ اللعبه .',nil,key,msg.id_/2097152/0.5)
+end
 if text == "العكس" then  
 if AddChannel(msg.sender_user_id_) == false then
 local textchuser = database:get(bot_id..'text:ch:user')
@@ -7904,6 +7908,7 @@ Teext = [[
 ❈︙لعبة الحزوره -› حزوره
 ❈︙لعبة المختلف -› المختلف
 ❈︙لعبة السمايلات -› سمايلات
+❈︙لعبة المتشابهات -› المتشابهات
 ❈︙لعبة حجره ورقه مقص -> حجره ورقه مقص
  — — — — — — — — — 
 ❈︙مجوهراتي -› لعرض عدد الارباح
@@ -10040,6 +10045,57 @@ elseif OnID=="mqs" and btme=="hjra" or OnID=="hjra" and btme=="wra"  or OnID=="w
 rr="🧙🏻‍♂️︙انا فزت حظ اوفر لك"
 end
 return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(rr)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
+end
+if DAata and DAata:match("^(%d+):playstart(.*)$") then
+local notId  = DAata:match("(%d+)")  
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+x = {} 
+x.inline_keyboard = {
+{{text = '🍇',callback_data=data.sender_user_id_..":playNew:🍇"},{text = '🍋',callback_data=data.sender_user_id_..":playNew:🍋"},{text = '🍭',callback_data=data.sender_user_id_..":playNew:🍭"},{text = '🍬',callback_data=data.sender_user_id_..":playNew:🍬"},{text = '🍫',callback_data=data.sender_user_id_..":playNew:🍫"},{text = '🐧',callback_data=data.sender_user_id_..":playNew:🐧"}},
+}
+https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape("قم الان بأختيار الاموجي المتوقع تخمينه 🔽")..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(x)) 
+end
+if DAata and DAata:match("^(%d+):playNew:(.*)$") then
+local notId  = DAata:match("(%d+)")  
+if tonumber(data.sender_user_id_) ~= tonumber(notId) then  
+local notText = '❈︙عذرا الاوامر هذه لا تخصك'
+https.request("https://api.telegram.org/bot"..token.."/answerCallbackQuery?callback_query_id="..data.id_.."&text="..URL.escape(notText).."&show_alert=true")
+return false
+end
+OnIDVV = DAata:gsub(':playNew:',''):gsub(notId,'')
+ls1 = {"🍇","🍋","🍭","🍬","🍫","🐧"};  ls2 = {"🍋","🍇","🍬","🍭","🐧","🍫"}; ls3 = {"🍇","🍋","🍭","🍬","🍫","🐧"};
+if math.random(1,3) == 1 then
+database:set(bot_id.."playNew:rand1"..data.sender_user_id_,ls3[math.random(#ls3)]) 
+elseif math.random(1,3) == 2 then
+database:set(bot_id.."playNew:rand1"..data.sender_user_id_,ls1[math.random(#ls1)]) 
+elseif math.random(1,3) == 3 then
+database:set(bot_id.."playNew:rand1"..data.sender_user_id_,ls2[math.random(#ls2)]) 
+end
+for k, v in pairs(ls1) do 
+keyboard = {} 
+keyboard.inline_keyboard = {
+{{text=ls1[math.random(#ls1)],callback_data=":"},{text =ls2[math.random(#ls2)],callback_data=":"},{text=ls3[math.random(#ls3)],callback_data=":"}},
+}
+https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape("جار اللعب يا صديقي ")..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(keyboard)) 
+end
+if OnIDVV == database:get(bot_id.."playNew:rand1"..data.sender_user_id_) then
+txt = "مبروك لقد فزت ياعزيز 🔘"
+im = OnIDVV
+else
+txt = "لقد أخطأت التخمين يا صديقي ،😂😂😂"
+im = database:get(bot_id.."playNew:rand1"..data.sender_user_id_)
+end
+yy = {} 
+yy.inline_keyboard = {
+{{text = im, callback_data=":"},{text = im, callback_data=":"},{text = im , callback_data=":"}},
+{{text ="لعب من جديد",callback_data=data.sender_user_id_..":playstart:add"}},
+}
+database:del(bot_id.."playNew:rand1"..data.sender_user_id_)  
+return https.request("https://api.telegram.org/bot"..token..'/editMessageText?chat_id='..Chat_id..'&text='..URL.escape(txt)..'&message_id='..msg_idd..'&parse_mode=markdown&disable_web_page_preview=true&reply_markup='..JSON.encode(yy)) 
 end
 end
 if (data.ID == "UpdateNewMessage") then
