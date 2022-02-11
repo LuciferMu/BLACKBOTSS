@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-cd $HOME/BLACKBOTSS
+cd $HOME/luciferMu
 install() {
 rm -rf $HOME/.telegram-cli
 sudo chmod +x tg
-chmod +x BLACKBOTSS
+chmod +x luciferMu
 chmod +x ts
 ./ts
 }
 get() {
-rm -fr BLACKBOTSS.lua
+rm -fr lucifer.lua
 rm -fr sudo.lua
-wget "https://raw.githubusercontent.com/BLACKBOTSS/BLACKBOTSS/master/BLACKBOTSS.lua"
+wget "https://raw.githubusercontent.com/luciferMu/luciferM/master/lucifer.lua"
 lua start.lua
 }
 installall(){
