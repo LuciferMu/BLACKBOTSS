@@ -1,6 +1,5 @@
 <h1 align="center">    Lucifer Source</h1>
 <p align="center">
-<img src="https://i.ibb.co/sp4vDB7/file-20.jpg"></p>
 ______________________________________________________________________________________________________________________
 
 ## How to install the bot
