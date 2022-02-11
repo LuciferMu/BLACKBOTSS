@@ -48,7 +48,7 @@ fi
 installall
 cd ..
 rm -rf luarocks*
-cd BLACKBOTSS
+cd luciferMu
 rm -rf luarocks*
 lua start.lua
 
